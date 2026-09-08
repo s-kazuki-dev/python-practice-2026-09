@@ -51,4 +51,4 @@ while True :
                 break  
     else:
         print('正しい商品番号を入力してください')
-
+        
