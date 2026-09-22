@@ -87,7 +87,7 @@ def input_delete_question(questions):
         return
     show_questions(questions)
     while True:
-        delete_number = input_integer("削除番号を入力/0で中止:")
+        delete_number = input_integer("削除番号を入力/0でキャンセル:")
         if delete_number == 0:
             break
         if delete_question(questions, delete_number):
@@ -96,7 +96,65 @@ def input_delete_question(questions):
             break
         else:
             print('正しい番号を入力してください:')
-        
+
+def update_question(questions, question_number, new_question, new_answer):
+    if 1 <= question_number <= len(questions):
+        questions[question_number-1]["question"] = new_question
+        questions[question_number-1]["answer"] = new_answer
+        save_questions(questions)
+        return True
+    else:
+        return False
+
+def input_update_question(questions):
+    if not questions:
+        print('問題がありません')
+        return
+    show_questions(questions)
+    while True:
+        update_number = input_integer("編集する番号を入力/0でキャンセル:")
+        if update_number == 0:
+            return
+        elif 1 <= update_number <= len(questions):
+            while True:
+                new_question = input('新しい問題文を入力/中止と入力でキャンセル:').strip()
+                if new_question == "中止":
+                    return
+                new_answer = input('新しい答えを入力/中止と入力でキャンセル:').strip()
+                if new_answer == "中止":
+                    return
+                if not new_question or not new_answer:
+                    print('問題文と答えを入力してください')
+                    continue
+                if update_question(questions, update_number, new_question, new_answer):
+                    print('変更しました')
+                    return
+        else:
+            print('正しい番号を入力してください:')
+
+def search_questions(questions, keyword):
+    results =[]
+    for question in questions:
+        if keyword in question["question"]:
+            results.append(question)
+    return results
+
+def input_search_questions(questions):
+    if not questions:
+        print('問題がありません')
+        return
+    while True:
+        keyword = input('キーワード入力').strip()
+        if not keyword:
+            print('キーワードを入力してください')
+            continue
+        search_results = search_questions(questions, keyword)
+        if not search_results:
+            print('見つかりませんでした')
+            return
+        else:
+            show_questions(search_results)
+            break
 
 def main(questions):
     while True:
@@ -105,6 +163,8 @@ def main(questions):
         print('2.問題を追加する')
         print('3.問題一覧を見る')
         print('4.問題を削除する')
+        print('5.問題を編集する')
+        print('6.問題を検索する')
         print('0.終了')
         print('-----------------')
         number = input_integer('番号を入力:')
@@ -116,6 +176,10 @@ def main(questions):
             show_questions(questions)
         elif number == 4:
             input_delete_question(questions)
+        elif number == 5:
+            input_update_question(questions)
+        elif number == 6:
+            input_search_questions(questions)
         elif number == 0:
             break
         else:
