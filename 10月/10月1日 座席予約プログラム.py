@@ -1,7 +1,8 @@
 seats = [
-    ["○", "○", "×"],
-    ["×", "○", "○"],
-    ["○", "×", "○"]
+    ["○", "○", "×", "○", "○"],
+    ["×", "○", "○", "○", "×"],
+    ["○", "×", "○", "○", "○"],
+    ["○", "○", "×", "×", "○"]
 ]
 
 def input_integer(message):
@@ -71,6 +72,9 @@ def input_position(seats):
     return row, column
 
 def reserve_seat(seats):
+    empty_count, _ = count_seats(seats)
+    if empty_count == 0:
+        return '空席がありません'
     position = input_position(seats)
     if position is None:
         return "予約を中止しました"
@@ -83,6 +87,9 @@ def reserve_seat(seats):
         return "すでに予約済みです"
 
 def cancel_seat(seats):
+    _, reserved_count = count_seats(seats)
+    if reserved_count == 0:
+        return '予約席がありません'
     position = input_position(seats)
     if position is None:
         return "予約キャンセルを中止しました"
@@ -94,16 +101,59 @@ def cancel_seat(seats):
     else:
         return "元から空いています"
 
+def show_menu():
+    print('-----------')
+    print('1.:予約する')
+    print('2.:予約をキャンセルする')
+    print('3.:座席状況を見る')
+    print('4.:行ごとの空席数を見る')
+    print('5.:全行の空席数を見る')
+    print('0.:終了')
+    print('-----------')
+
+def show_status(seats):
+    show_seats(seats)
+    empty_count, reserved_count = count_seats(seats)
+    empty_ratio = calculate_ratio(empty_count, reserved_count)
+    status = judge_status(empty_ratio)
+    print(f'空席:{empty_count}')
+    print(f'予約済:{reserved_count}')
+    print(f'空席率:{empty_ratio:.1f}%')
+    print(status)
+
+def count_empty_in_row(row):
+    empty_count = 0
+    for seat in row:
+        if seat == "○":
+            empty_count += 1
+    return empty_count
+
+def show_each_row(seats):
+    while True:
+        number = input_integer(f'確認する行番号を入力(1～{len(seats)})/0で中止')
+        if number == 0:
+            print('中止しました')
+            return
+        elif 1 <= number <= len(seats):
+            empty_count = count_empty_in_row(seats[number-1])
+            break
+        else:
+            print('正しい番号を入力してください')
+
+    print(f'{number}行目の空席:{empty_count}席') 
+
+def show_all_rows(seats):
+    row_number = 1
+    for row in seats:
+        empty_count = count_empty_in_row(row)
+        print(f'{row_number}行目の空席:{empty_count}席')
+        row_number += 1
+        
 def run_menu(seats):
     while True:
         print('現在の座席表')
         show_seats(seats)
-        print('-----------')
-        print('1.:予約する')
-        print('2.:予約をキャンセルする')
-        print('3.:座席状況を見る')
-        print('0.:終了')
-        print('-----------')
+        show_menu()
         number = input_integer('番号を入力')
         if number == 0:
             print('終了します')
@@ -115,16 +165,14 @@ def run_menu(seats):
             message = cancel_seat(seats) 
             print(message)
         elif number == 3:
-            show_seats(seats)
-            empty_count, reserved_count = count_seats(seats)
-            empty_ratio = calculate_ratio(empty_count, reserved_count)
-            status = judge_status(empty_ratio)
-            print(f'空席:{empty_count}')
-            print(f'予約済:{reserved_count}')
-            print(f'空席率:{empty_ratio:.1f}%')
-            print(status)
+            show_status(seats)
+        elif number == 4:
+            show_each_row(seats)
+        elif number == 5:
+            show_all_rows(seats)
         else:
             print('正しい番号を入力してください')
 
 
 run_menu(seats)
+
