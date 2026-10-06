@@ -261,7 +261,46 @@ def show_subject_ranking(records):
         start=1
         ):
         print(f'{number}位 {subject}:{minutes}分')
-        
+
+def show_date_subject_totals(records):
+    if not records:
+        print('記録がありません')
+        return
+    date = input_date('日付を入力/0で中止:')
+    if date is None:
+        return
+    totals = []
+    for record in records:
+        if record["date"] == date:
+            totals.append(record)
+    if not totals:
+        print('その日付の記録はありません')
+        return
+    results = calculate_subject_totals(totals)
+    print(f'{date}の科目別学習時間')
+    for subject in results:
+        print(f'{subject}:{results[subject]}分')
+
+def search_by_date_and_subject(records):
+    if not records:
+        print('記録がありません')
+        return
+    date = input_date('日付を入力/0で中止:')
+    if date is None:
+        return
+    subject = input('科目名を入力/0で中止:')
+    if subject == "0":
+        print('中止しました')
+        return
+    totals = []
+    for record in records:
+        if date == record["date"] and subject in record["subject"]:
+            totals.append(record)
+    if not totals:
+        print('一致する記録はありません')
+        return
+    show_records(totals)
+    
 def show_menu():
     print('---------------')
     print('1.学習記録を見る')
@@ -277,6 +316,8 @@ def show_menu():
     print('11.科目別ランキングを見る')
     print('12.日付から記録を検索する')
     print('13.指定した日付の合計学習時間を見る')
+    print('14.指定した日の科目別学習時間を見る')
+    print('15.指定した日付と科目の記録を見る')
     print('0.終了')
     print('----------------')
 
@@ -311,6 +352,10 @@ def run_menu(records):
             search_by_date(records)
         elif number == 13:
             show_date_total(records)
+        elif number == 14:
+            show_date_subject_totals(records)
+        elif number == 15:
+            search_by_date_and_subject(records)
         elif number == 0:
             save_records(records)
             print('データを保存して終了します')
