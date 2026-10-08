@@ -31,3 +31,15 @@ def calculate_subject_totals(records):
             totals[record["subject"]] += record["minutes"]
     return totals
 
+def calculate_average_minutes(records):
+    if not records:
+        return 0
+    total = calculate_total_minutes(records)
+    average = total / len(records)
+    return average
+
+def calculate_date_total(records, date):
+    filtered_records = filter_records_by_date(records, date)
+    total = calculate_total_minutes(filtered_records)
+    return total
+

@@ -3,7 +3,9 @@ from record_utils import(
     filter_records_by_subject,
     filter_records_by_date,
     calculate_total_minutes,
-    calculate_subject_totals
+    calculate_subject_totals,
+    calculate_average_minutes,
+    calculate_date_total
 )
 
 def create_test_records():
@@ -98,5 +100,37 @@ def test_records_are_independent():
     # Assert
     assert records2[0]["minutes"] == 90
 
+def test_calculate_average_minutes():
+    #Arrange
+    records = create_test_records()
+    expected = 90
+    #Act
+    result = calculate_average_minutes(records)
+    #Assert
+    assert result == expected
+    #Arrange 
+    empty_records = []
+    expected = 0
+    #Act
+    result =calculate_average_minutes(empty_records)
+    #Assert
+    assert result == expected
 
+def test_calculate_date_total():
+    #Arrange
+    records = create_test_records()
+    date = "2026-10-07"
+    expected = 180
+    #Act
+    result = calculate_date_total(records, date)
+    #Assert
+    assert result == expected
+    #Arrange
+    date = "2026-10-08"
+    expected = 0
+    #Act
+    result = calculate_date_total(records,date)
+    #Assert
+    assert result == expected
 
+    
