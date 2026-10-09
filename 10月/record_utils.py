@@ -23,13 +23,7 @@ def calculate_total_minutes(records):
 
 #合計学習時間(科目ごと)
 def calculate_subject_totals(records):
-    totals = {}
-    for record in records:
-        if record["subject"] not in totals:
-            totals[record["subject"]] = record["minutes"]
-        else:
-            totals[record["subject"]] += record["minutes"]
-    return totals
+    return calculate_totals_by_key(records, "subject")
 
 def calculate_average_minutes(records):
     if not records:
@@ -42,4 +36,16 @@ def calculate_date_total(records, date):
     filtered_records = filter_records_by_date(records, date)
     total = calculate_total_minutes(filtered_records)
     return total
+
+def calculate_date_totals(records):
+    return calculate_totals_by_key(records, "date")
+    
+def calculate_totals_by_key(records, key):
+    totals = {}
+    for record in records:
+        if record[key] not in totals:
+            totals[record[key]] = record["minutes"]
+        else:
+            totals[record[key]] += record["minutes"]
+    return totals
 

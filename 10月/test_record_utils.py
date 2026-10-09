@@ -1,11 +1,15 @@
 
+import pytest
+
 from record_utils import(
     filter_records_by_subject,
     filter_records_by_date,
     calculate_total_minutes,
     calculate_subject_totals,
     calculate_average_minutes,
-    calculate_date_total
+    calculate_date_total,
+    calculate_date_totals,
+    calculate_totals_by_key
 )
 
 def create_test_records():
@@ -15,8 +19,16 @@ def create_test_records():
         {"date": "2026-10-07", "subject": "基本情報", "minutes": 60}
     ]
 
-def test_filter_records_by_subject():
-    records = create_test_records()
+@pytest.fixture
+def sample_records():
+    return [
+        {"date": "2026-10-06", "subject": "Python", "minutes": 90},
+        {"date": "2026-10-07", "subject": "Python", "minutes": 120},
+        {"date": "2026-10-07", "subject": "基本情報", "minutes": 60}
+    ]
+
+def test_filter_records_by_subject(sample_records):
+    records = sample_records
     #Arrange
     subject = "Python"
     expected_count = 2
@@ -39,8 +51,8 @@ def test_filter_records_by_subject():
     #Assert
     assert result == expected
 
-def test_filter_records_by_date():
-    records = create_test_records()
+def test_filter_records_by_date(sample_records):
+    records = sample_records
     #Arrange
     date = "2026-10-07"
     expected_count = 2
@@ -56,8 +68,8 @@ def test_filter_records_by_date():
     #Assert
     assert result == expected
 
-def test_calculate_total_minutes():
-    records = create_test_records()
+def test_calculate_total_minutes(sample_records):
+    records = sample_records
     #Arrange
     expected = 270
     #Act
@@ -71,8 +83,8 @@ def test_calculate_total_minutes():
     #Assert
     assert result == expected
 
-def test_calculate_subject_totals():
-    records = create_test_records()
+def test_calculate_subject_totals(sample_records):
+    records = sample_records
     #Arrange
     expected_python = 210
     expected_fe = 60
@@ -100,9 +112,9 @@ def test_records_are_independent():
     # Assert
     assert records2[0]["minutes"] == 90
 
-def test_calculate_average_minutes():
+def test_calculate_average_minutes(sample_records):
     #Arrange
-    records = create_test_records()
+    records = sample_records
     expected = 90
     #Act
     result = calculate_average_minutes(records)
@@ -116,9 +128,9 @@ def test_calculate_average_minutes():
     #Assert
     assert result == expected
 
-def test_calculate_date_total():
+def test_calculate_date_total(sample_records):
     #Arrange
-    records = create_test_records()
+    records = sample_records
     date = "2026-10-07"
     expected = 180
     #Act
@@ -130,6 +142,48 @@ def test_calculate_date_total():
     expected = 0
     #Act
     result = calculate_date_total(records,date)
+    #Assert
+    assert result == expected
+
+def test_calculate_date_totals(sample_records):
+    #Arrange
+    records = sample_records
+    expected = {
+        "2026-10-06":90,
+        "2026-10-07":180
+    }
+    #Act
+    result = calculate_date_totals(records)
+    #Assert
+    assert result == expected
+    #Arrange
+    empty_records = []
+    expected = {}
+    #Act
+    result = calculate_date_totals(empty_records)
+    #Assert
+    assert result == expected
+
+def test_calculate_totals_by_key(sample_records):
+    #Arrange
+    records = sample_records
+    key = "subject"
+    expected = {
+    "Python": 210,
+    "基本情報": 60
+    }
+    #Act
+    result = calculate_totals_by_key(records, key)
+    #Assert
+    assert result == expected
+    #Arrange
+    key = "date"
+    expected = {
+    "2026-10-06": 90,
+    "2026-10-07": 180
+    }
+    #Act
+    result = calculate_totals_by_key(records, key)
     #Assert
     assert result == expected
 
