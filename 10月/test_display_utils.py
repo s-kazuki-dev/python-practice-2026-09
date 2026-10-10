@@ -1,16 +1,13 @@
 
 from display_utils import (
     show_date_totals,
-    show_average_minutes
+    show_average_minutes,
+    show_top_subject
 )
 
-def test_show_date_totals(capsys):
+def test_show_date_totals(sample_records,capsys):
     #Arrange
-    records = [
-        {"date": "2026-10-06", "subject": "Python", "minutes": 90},
-        {"date": "2026-10-07", "subject": "Python", "minutes": 120},
-        {"date": "2026-10-07", "subject": "基本情報", "minutes": 60}
-    ]
+    records = sample_records
     #Act
     show_date_totals(records)
     captured = capsys.readouterr()
@@ -27,13 +24,9 @@ def test_show_date_totals_empty(capsys):
     #Assert
     assert "記録がありません" in captured.out
 
-def test_show_average_minutes(capsys):
+def test_show_average_minutes(sample_records,capsys):
     #Arrange
-    records = [
-        {"date": "2026-10-06", "subject": "Python", "minutes": 90},
-        {"date": "2026-10-07", "subject": "Python", "minutes": 120},
-        {"date": "2026-10-07", "subject": "基本情報", "minutes": 60}
-    ]
+    records = sample_records
     #Act
     show_average_minutes(records)
     captured = capsys.readouterr()
@@ -47,5 +40,15 @@ def test_show_average_minutes_empty(capsys):
     show_average_minutes(records)
     captured = capsys.readouterr()
     #Assert
+    assert "記録がありません" in captured.out
+
+def test_show_top_subject(sample_records, capsys):
+    show_top_subject(sample_records)
+    captured = capsys.readouterr()
+    assert "最も学習した科目: Python (210分)" in captured.out
+
+def test_show_top_subject_empty(capsys):
+    show_top_subject([])
+    captured = capsys.readouterr()
     assert "記録がありません" in captured.out
 

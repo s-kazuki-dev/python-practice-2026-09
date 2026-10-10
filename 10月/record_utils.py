@@ -49,3 +49,15 @@ def calculate_totals_by_key(records, key):
             totals[record[key]] += record["minutes"]
     return totals
 
+def find_top_subject(records):
+    if not records:
+        return None
+    result = calculate_subject_totals(records)
+    max_minutes = 0
+    max_subject = None
+    for subject, minutes in result.items():
+        if minutes > max_minutes:
+            max_minutes = minutes
+            max_subject = subject
+    return (max_subject, max_minutes)
+

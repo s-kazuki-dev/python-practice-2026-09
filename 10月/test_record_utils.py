@@ -9,18 +9,11 @@ from record_utils import(
     calculate_average_minutes,
     calculate_date_total,
     calculate_date_totals,
-    calculate_totals_by_key
+    calculate_totals_by_key,
+    find_top_subject
 )
 
 def create_test_records():
-    return [
-        {"date": "2026-10-06", "subject": "Python", "minutes": 90},
-        {"date": "2026-10-07", "subject": "Python", "minutes": 120},
-        {"date": "2026-10-07", "subject": "基本情報", "minutes": 60}
-    ]
-
-@pytest.fixture
-def sample_records():
     return [
         {"date": "2026-10-06", "subject": "Python", "minutes": 90},
         {"date": "2026-10-07", "subject": "Python", "minutes": 120},
@@ -68,19 +61,26 @@ def test_filter_records_by_date(sample_records):
     #Assert
     assert result == expected
 
-def test_calculate_total_minutes(sample_records):
-    records = sample_records
-    #Arrange
-    expected = 270
-    #Act
+@pytest.mark.parametrize(
+        "records, expected",
+        [
+        (
+            [
+                {"date": "2026-10-06", "subject": "Python", "minutes": 90},
+                {"date": "2026-10-07", "subject": "Python", "minutes": 120},
+                {"date": "2026-10-07", "subject": "基本情報", "minutes": 60}
+            ],
+            270
+        ),
+        ([], 0),
+        (
+            [{"date": "2026-10-06", "subject": "Python", "minutes": 90}],
+            90
+        )
+        ]
+    )
+def test_calculate_total_minutes(records, expected):
     result = calculate_total_minutes(records)
-    #Assert
-    assert result == expected
-    #Arrange
-    expected = 0
-    #Act
-    result = calculate_total_minutes([])
-    #Assert
     assert result == expected
 
 def test_calculate_subject_totals(sample_records):
@@ -112,37 +112,34 @@ def test_records_are_independent():
     # Assert
     assert records2[0]["minutes"] == 90
 
-def test_calculate_average_minutes(sample_records):
-    #Arrange
-    records = sample_records
-    expected = 90
-    #Act
+@pytest.mark.parametrize(
+        "records, expected",
+        [
+            ([
+                {"date": "2026-10-06", "subject": "Python", "minutes": 90},
+                {"date": "2026-10-07", "subject": "Python", "minutes": 120},
+                {"date": "2026-10-07", "subject": "基本情報", "minutes": 60}
+            ],
+            90.0),
+            ([], 0),
+            ([{"date": "2026-10-07", "subject": "Python", "minutes": 120}],
+             120.0)
+        ]
+)
+def test_calculate_average_minutes(records, expected):
     result = calculate_average_minutes(records)
-    #Assert
-    assert result == expected
-    #Arrange 
-    empty_records = []
-    expected = 0
-    #Act
-    result =calculate_average_minutes(empty_records)
-    #Assert
     assert result == expected
 
-def test_calculate_date_total(sample_records):
-    #Arrange
-    records = sample_records
-    date = "2026-10-07"
-    expected = 180
-    #Act
-    result = calculate_date_total(records, date)
-    #Assert
-    assert result == expected
-    #Arrange
-    date = "2026-10-08"
-    expected = 0
-    #Act
-    result = calculate_date_total(records,date)
-    #Assert
+@pytest.mark.parametrize(
+        "date, expected",
+        [
+            ("2026-10-06",90),
+            ("2026-10-07",180),
+            ("2026-10-08",0)
+        ]
+)
+def test_calculate_date_total(sample_records, date, expected):
+    result = calculate_date_total(sample_records, date)
     assert result == expected
 
 def test_calculate_date_totals(sample_records):
@@ -186,5 +183,15 @@ def test_calculate_totals_by_key(sample_records):
     result = calculate_totals_by_key(records, key)
     #Assert
     assert result == expected
+
+def test_find_top_subject(sample_records):
+    result = find_top_subject(sample_records)
+    assert result == ("Python", 210)
+
+def test_find_top_subject_empty():
+    result = find_top_subject([])
+    expected = None
+    assert result == expected
+
 
     

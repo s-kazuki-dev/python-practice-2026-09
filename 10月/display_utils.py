@@ -1,7 +1,8 @@
 
 from record_utils import (
     calculate_date_totals,
-    calculate_average_minutes
+    calculate_average_minutes,
+    find_top_subject
 )
 
 def show_date_totals(records):
@@ -18,3 +19,12 @@ def show_average_minutes(records):
         return
     average = calculate_average_minutes(records)
     print(f'平均学習時間: {average}分')
+
+def show_top_subject(records):
+    result = find_top_subject(records)
+    if result is None:
+        print('記録がありません')
+        return
+    subject, minutes = result
+    print(f'最も学習した科目: {subject} ({minutes}分)')
+
