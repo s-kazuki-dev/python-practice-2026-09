@@ -2,7 +2,8 @@
 from display_utils import (
     show_date_totals,
     show_average_minutes,
-    show_top_subject
+    show_top_subject,
+    show_records_by_date_range
 )
 
 def test_show_date_totals(sample_records,capsys):
@@ -51,4 +52,17 @@ def test_show_top_subject_empty(capsys):
     show_top_subject([])
     captured = capsys.readouterr()
     assert "記録がありません" in captured.out
+
+def test_show_records_by_date_range(sample_records, capsys):
+    show_records_by_date_range(sample_records, "2026-10-07", "2026-10-07")
+    captured = capsys.readouterr()
+    assert "2026-10-07 Python 120分" in captured.out
+    assert "2026-10-07 基本情報 60分" in captured.out
+
+def test_show_records_by_date_range_no_match(sample_records, capsys):
+    show_records_by_date_range(sample_records, "2026-10-08", "2026-10-10")
+    captured = capsys.readouterr()
+    assert "該当する記録がありません" in captured.out
+
+    
 

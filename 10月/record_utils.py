@@ -61,3 +61,10 @@ def find_top_subject(records):
             max_subject = subject
     return (max_subject, max_minutes)
 
+def filter_records_by_date_range(records, start_date, end_date):
+    result = []
+    for record in records:
+        if start_date <= record["date"] <= end_date:
+            result.append(record)
+    return result
+

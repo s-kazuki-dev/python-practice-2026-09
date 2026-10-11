@@ -10,7 +10,8 @@ from record_utils import(
     calculate_date_total,
     calculate_date_totals,
     calculate_totals_by_key,
-    find_top_subject
+    find_top_subject,
+    filter_records_by_date_range
 )
 
 def create_test_records():
@@ -193,5 +194,42 @@ def test_find_top_subject_empty():
     expected = None
     assert result == expected
 
+def test_filter_records_by_date_range(sample_records):
+    records = sample_records
+    start_date = "2026-10-06"
+    end_date = "2026-10-07"
+    expected = [
+                {"date": "2026-10-06", "subject": "Python", "minutes": 90},
+                {"date": "2026-10-07", "subject": "Python", "minutes": 120},
+                {"date": "2026-10-07", "subject": "基本情報", "minutes": 60}
+            ]
+    result = filter_records_by_date_range(records, start_date, end_date)
+    assert result == expected
 
-    
+def test_filter_records_by_date_range_empty():
+    records = []
+    start_date = "2026-10-06"
+    end_date = "2026-10-07"
+    expected = []
+    result = filter_records_by_date_range(records, start_date, end_date)
+    assert result == expected
+
+def test_filter_records_by_date_range_excludes_outside(sample_records):
+    records = sample_records
+    start_date = "2026-10-07"
+    end_date = "2026-10-07"
+    expected = [
+        {"date": "2026-10-07", "subject": "Python", "minutes": 120},
+        {"date": "2026-10-07", "subject": "基本情報", "minutes": 60}
+    ]
+    result = filter_records_by_date_range(records, start_date, end_date)
+    assert result == expected
+
+def test_filter_records_by_date_range_no_match(sample_records):
+    records = sample_records
+    start_date = "2026-10-08"
+    end_date = "2026-10-10"
+    expected = []
+    result = filter_records_by_date_range(records, start_date, end_date)
+    assert result == expected
+

@@ -2,7 +2,8 @@
 from record_utils import (
     calculate_date_totals,
     calculate_average_minutes,
-    find_top_subject
+    find_top_subject,
+    filter_records_by_date_range
 )
 
 def show_date_totals(records):
@@ -27,4 +28,12 @@ def show_top_subject(records):
         return
     subject, minutes = result
     print(f'最も学習した科目: {subject} ({minutes}分)')
+
+def show_records_by_date_range(records, start_date, end_date):
+    result = filter_records_by_date_range(records, start_date, end_date)
+    if not result:
+        print('該当する記録がありません')
+        return
+    for record in result:
+        print(f'{record["date"]} {record["subject"]} {record["minutes"]}分')
 
