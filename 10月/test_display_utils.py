@@ -3,7 +3,8 @@ from display_utils import (
     show_date_totals,
     show_average_minutes,
     show_top_subject,
-    show_records_by_date_range
+    show_records_by_date_range,
+    show_date_range_total
 )
 
 def test_show_date_totals(sample_records,capsys):
@@ -64,5 +65,14 @@ def test_show_records_by_date_range_no_match(sample_records, capsys):
     captured = capsys.readouterr()
     assert "該当する記録がありません" in captured.out
 
-    
+def test_show_date_range_total(sample_records, capsys):
+    show_date_range_total(sample_records, "2026-10-06", "2026-10-07")
+    captured = capsys.readouterr()
+    assert "期間内の合計学習時間: 270分" in captured.out
+
+
+def test_show_date_range_total_no_match(sample_records, capsys):
+    show_date_range_total(sample_records, "2026-10-08", "2026-10-10")
+    captured = capsys.readouterr()
+    assert "期間内の合計学習時間: 0分" in captured.out
 

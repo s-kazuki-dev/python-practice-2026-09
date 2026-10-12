@@ -68,3 +68,8 @@ def filter_records_by_date_range(records, start_date, end_date):
             result.append(record)
     return result
 
+def calculate_date_range_total(records, start_date, end_date):
+    result = filter_records_by_date_range(records, start_date, end_date)
+    total = calculate_total_minutes(result)
+    return total
+

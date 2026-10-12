@@ -3,7 +3,8 @@ from record_utils import (
     calculate_date_totals,
     calculate_average_minutes,
     find_top_subject,
-    filter_records_by_date_range
+    filter_records_by_date_range,
+    calculate_date_range_total
 )
 
 def show_date_totals(records):
@@ -36,4 +37,8 @@ def show_records_by_date_range(records, start_date, end_date):
         return
     for record in result:
         print(f'{record["date"]} {record["subject"]} {record["minutes"]}分')
+
+def show_date_range_total(records, start_date, end_date):
+    total = calculate_date_range_total(records, start_date, end_date)
+    print(f'期間内の合計学習時間: {total}分')
 

@@ -11,7 +11,8 @@ from record_utils import(
     calculate_date_totals,
     calculate_totals_by_key,
     find_top_subject,
-    filter_records_by_date_range
+    filter_records_by_date_range,
+    calculate_date_range_total
 )
 
 def create_test_records():
@@ -233,3 +234,20 @@ def test_filter_records_by_date_range_no_match(sample_records):
     result = filter_records_by_date_range(records, start_date, end_date)
     assert result == expected
 
+def test_calculate_date_range_total(sample_records):
+    records = sample_records
+    start_date = "2026-10-06"
+    end_date = "2026-10-07"
+    expected = 270
+    result = calculate_date_range_total(records, start_date, end_date)
+    assert result == expected
+
+def test_calculate_date_range_total_empty():
+    records = []
+    start_date = "2026-10-06"
+    end_date = "2026-10-07"
+    expected = 0
+    result = calculate_date_range_total(records, start_date, end_date)
+    assert result == expected
+
+    
