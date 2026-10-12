@@ -23,7 +23,8 @@ from display_utils import (
 )
 from input_utils import(
     input_integer,
-    input_date
+    input_date,
+    input_date_range
 )
 
 def show_records(records):
@@ -334,30 +335,16 @@ def run_menu(records):
         elif number == 18:
             show_top_subject(records)
         elif number == 19:
-            start_date = input_date('開始日を入力してください/0で中止')
-            if start_date is None:
-                print('検索を中止しました')
+            date_range = input_date_range()
+            if date_range is None:
                 continue
-            end_date = input_date('終了日を入力してください/0で中止')
-            if end_date is None:
-                print('検索を中止しました')
-                continue
-            if start_date > end_date:
-                print('開始日は終了日以前の日付を入力してください')
-                continue
+            start_date, end_date = date_range
             show_records_by_date_range(records,start_date,end_date)
         elif number == 20:
-            start_date = input_date('開始日を入力してください/0で中止')
-            if start_date is None:
-                print('検索を中止しました')
+            date_range = input_date_range()
+            if date_range is None:
                 continue
-            end_date = input_date('終了日を入力してください/0で中止')
-            if end_date is None:
-                print('検索を中止しました')
-                continue
-            if start_date > end_date:
-                print('開始日は終了日以前の日付を入力してください')
-                continue
+            start_date, end_date = date_range
             show_date_range_total(records, start_date, end_date)
         elif number == 0:
             save_records(records)
@@ -369,5 +356,4 @@ def run_menu(records):
 if __name__ == "__main__":
     records = load_records()
     run_menu(records)
-
 
