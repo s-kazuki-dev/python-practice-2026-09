@@ -8,6 +8,9 @@ from record_utils import (
     calculate_date_range_average
 )
 
+from record_types import Record
+
+
 def show_date_totals(records):
     totals = calculate_date_totals(records)
     if not totals:
@@ -31,7 +34,7 @@ def show_top_subject(records):
     subject, minutes = result
     print(f'最も学習した科目: {subject} ({minutes}分)')
 
-def show_records_by_date_range(records, start_date, end_date):
+def show_records_by_date_range(records: list[Record], start_date: str, end_date: str) -> None:
     result = filter_records_by_date_range(records, start_date, end_date)
     if not result:
         print('該当する記録がありません')
@@ -39,11 +42,11 @@ def show_records_by_date_range(records, start_date, end_date):
     for record in result:
         print(f'{record["date"]} {record["subject"]} {record["minutes"]}分')
 
-def show_date_range_total(records, start_date, end_date):
+def show_date_range_total(records: list[Record], start_date: str, end_date: str) -> None:
     total = calculate_date_range_total(records, start_date, end_date)
     print(f'期間内の合計学習時間: {total}分')
 
-def show_date_range_average(records, start_date, end_date):
+def show_date_range_average(records: list[Record], start_date: str, end_date: str) -> None:
     average = calculate_date_range_average(records, start_date, end_date)
     print(f'期間内の平均学習時間: {average}分')
 

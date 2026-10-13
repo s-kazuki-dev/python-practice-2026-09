@@ -8,7 +8,7 @@ def input_integer(message):
         except ValueError:
             print('数字で入力してください')
 
-def input_date(message):
+def input_date(message: str) -> str | None:
     while True:
         try:
             date = input(message)
@@ -20,7 +20,7 @@ def input_date(message):
         except ValueError:
             print('正しい日付を入力してください')
 
-def input_date_range():
+def input_date_range() -> tuple[str, str] | None:
     start_date = input_date('開始日を入力してください/0で中止')
     if start_date is None:
         print('処理を中止しました')

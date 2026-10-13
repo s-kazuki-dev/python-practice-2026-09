@@ -1,4 +1,6 @@
 
+from record_types import Record
+
 import pytest
 
 from record_utils import(
@@ -266,3 +268,12 @@ def test_calculate_date_range_average_no_match(sample_records):
     expected = 0
     result = calculate_date_range_average(records, start_date, end_date)
     assert result == expected
+
+def test_find_top_subject_zero_minutes():
+    records: list[Record] = [
+    {"date": "2026-10-13", "subject": "Python", "minutes": 0}
+    ]
+    expected = ("Python", 0)
+    result = find_top_subject(records)
+    assert result == expected
+
