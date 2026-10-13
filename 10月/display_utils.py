@@ -4,7 +4,8 @@ from record_utils import (
     calculate_average_minutes,
     find_top_subject,
     filter_records_by_date_range,
-    calculate_date_range_total
+    calculate_date_range_total,
+    calculate_date_range_average
 )
 
 def show_date_totals(records):
@@ -41,4 +42,8 @@ def show_records_by_date_range(records, start_date, end_date):
 def show_date_range_total(records, start_date, end_date):
     total = calculate_date_range_total(records, start_date, end_date)
     print(f'期間内の合計学習時間: {total}分')
+
+def show_date_range_average(records, start_date, end_date):
+    average = calculate_date_range_average(records, start_date, end_date)
+    print(f'期間内の平均学習時間: {average}分')
 
