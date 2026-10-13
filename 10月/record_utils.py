@@ -1,5 +1,5 @@
 
-from record_types import Record
+from record_types import Record, DateRangeSummary
 
 from typing import Literal
 
@@ -83,4 +83,21 @@ def calculate_date_range_average(records: list[Record], start_date: str, end_dat
     result = filter_records_by_date_range(records, start_date, end_date)
     average = calculate_average_minutes(result)
     return average
+
+def calculate_date_range_summary(records: list[Record], start_date: str, end_date: str) -> DateRangeSummary | None:
+    result = filter_records_by_date_range(records, start_date, end_date)
+    if not result:
+        return None
+    total = calculate_total_minutes(result)
+    average = calculate_average_minutes(result)
+    top_record = find_top_subject(result)
+    if top_record is None:
+        return None
+    top_subject, top_minutes = top_record
+    return {
+        "total": total,
+        "average": average,
+        "top_subject": top_subject,
+        "top_minutes": top_minutes
+    }
 

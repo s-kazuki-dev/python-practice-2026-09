@@ -20,13 +20,17 @@ from display_utils import (
     show_top_subject,
     show_records_by_date_range,
     show_date_range_total,
-    show_date_range_average
+    show_date_range_average,
+    show_date_range_summary
 )
 from input_utils import(
     input_integer,
     input_date,
     input_date_range
 )
+
+from collections.abc import Callable
+from record_types import Record
 
 def show_records(records):
     if not records:
@@ -268,7 +272,17 @@ def search_by_date_and_subject(records):
         print('一致する記録はありません')
         return
     show_records(filtered_records)
-    
+
+def run_date_range_action(
+    records: list[Record],
+    action: Callable[[list[Record], str, str], None]
+) -> None:
+    date_range = input_date_range()
+    if date_range is None:
+        return
+    start_date, end_date = date_range
+    action(records, start_date, end_date)
+
 def show_menu():
     print('---------------')
     print('1.学習記録を見る')
@@ -292,6 +306,7 @@ def show_menu():
     print('19.期間を指定して学習記録を見る')
     print('20.期間内の合計学習時間を見る')
     print('21.期間内の平均学習時間を見る')
+    print('22.期間内の学習サマリーを見る')
     print('0.終了')
     print('----------------')
 
@@ -337,23 +352,13 @@ def run_menu(records):
         elif number == 18:
             show_top_subject(records)
         elif number == 19:
-            date_range = input_date_range()
-            if date_range is None:
-                continue
-            start_date, end_date = date_range
-            show_records_by_date_range(records,start_date,end_date)
+            run_date_range_action(records, show_records_by_date_range)
         elif number == 20:
-            date_range = input_date_range()
-            if date_range is None:
-                continue
-            start_date, end_date = date_range
-            show_date_range_total(records, start_date, end_date)
+            run_date_range_action(records, show_date_range_total)
         elif number == 21:
-            date_range = input_date_range()
-            if date_range is None:
-                continue
-            start_date, end_date = date_range
-            show_date_range_average(records, start_date, end_date)
+            run_date_range_action(records, show_date_range_average)
+        elif number == 22:
+            run_date_range_action(records, show_date_range_summary)
         elif number == 0:
             save_records(records)
             print('データを保存して終了します')

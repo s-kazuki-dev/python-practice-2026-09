@@ -15,7 +15,8 @@ from record_utils import(
     find_top_subject,
     filter_records_by_date_range,
     calculate_date_range_total,
-    calculate_date_range_average
+    calculate_date_range_average,
+    calculate_date_range_summary
 )
 
 def create_test_records():
@@ -276,4 +277,24 @@ def test_find_top_subject_zero_minutes():
     expected = ("Python", 0)
     result = find_top_subject(records)
     assert result == expected
+
+def test_calculate_date_range_summary(sample_records):
+    records = sample_records
+    start_date = "2026-10-06"
+    end_date = "2026-10-07"
+    expected = {
+        "total": 270,
+        "average": 90.0,
+        "top_subject": "Python",
+        "top_minutes": 210
+    }
+    result = calculate_date_range_summary(records, start_date, end_date)
+    assert result == expected
+
+def test_calculate_date_range_summary_no_match(sample_records):
+    records = sample_records
+    start_date = "2026-10-08"
+    end_date = "2026-10-10"
+    result = calculate_date_range_summary(records, start_date, end_date)
+    assert result is None
 

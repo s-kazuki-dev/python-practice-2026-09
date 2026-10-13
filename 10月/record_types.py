@@ -5,3 +5,9 @@ class Record(TypedDict):
     subject: str
     minutes: int
 
+class DateRangeSummary(TypedDict):
+    total: int
+    average: float
+    top_subject: str
+    top_minutes: int
+
