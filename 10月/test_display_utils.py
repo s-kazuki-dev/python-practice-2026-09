@@ -6,7 +6,8 @@ from display_utils import (
     show_records_by_date_range,
     show_date_range_total,
     show_date_range_average,
-    show_date_range_summary
+    show_date_range_summary,
+    show_study_days
 )
 
 def test_show_date_totals(sample_records,capsys):
@@ -95,9 +96,21 @@ def test_show_date_range_summary(sample_records, capsys):
     assert "合計学習時間: 270分" in captured.out
     assert "平均学習時間: 90.0分" in captured.out
     assert "最も学習した科目: Python (210分)" in captured.out
+    assert "学習日数: 2日" in captured.out
 
 def test_show_date_range_summary_no_match(sample_records, capsys):
     show_date_range_summary(sample_records, "2026-10-08", "2026-10-10")
     captured = capsys.readouterr()
     assert "記録がありません" in captured.out
+
+def test_show_study_days(sample_records, capsys):
+    show_study_days(sample_records)
+    captured = capsys.readouterr()
+    assert "学習日数: 2日" in captured.out
+
+def test_show_study_days_empty(capsys):
+    show_study_days([])
+    captured = capsys.readouterr()
+    assert "学習日数: 0日" in captured.out
+
 

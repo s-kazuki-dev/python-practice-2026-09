@@ -7,7 +7,8 @@ from record_utils import (
     calculate_date_range_total,
     calculate_date_range_average,
     calculate_total_minutes,
-    calculate_date_range_summary
+    calculate_date_range_summary,
+    count_study_days
 )
 
 from record_types import Record
@@ -61,4 +62,10 @@ def show_date_range_summary(records: list[Record], start_date: str, end_date: st
     print(f'合計学習時間: {summary["total"]}分')
     print(f'平均学習時間: {summary["average"]}分')
     print(f'最も学習した科目: {summary["top_subject"]} ({summary["top_minutes"]}分)')
+    print(f'学習日数: {summary["study_days"]}日')
+
+def show_study_days(records: list[Record]) -> None:
+    result = count_study_days(records)
+    print(f'学習日数: {result}日')
+
 

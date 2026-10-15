@@ -88,6 +88,7 @@ def calculate_date_range_summary(records: list[Record], start_date: str, end_dat
     result = filter_records_by_date_range(records, start_date, end_date)
     if not result:
         return None
+    study_days = count_study_days(result)
     total = calculate_total_minutes(result)
     average = calculate_average_minutes(result)
     top_record = find_top_subject(result)
@@ -98,6 +99,14 @@ def calculate_date_range_summary(records: list[Record], start_date: str, end_dat
         "total": total,
         "average": average,
         "top_subject": top_subject,
-        "top_minutes": top_minutes
+        "top_minutes": top_minutes,
+        "study_days": study_days
     }
+
+def count_study_days(records: list[Record]) -> int:
+    dates: set[str] = set()
+    for record in records:
+        dates.add(record["date"])
+    count = len(dates)
+    return count
 

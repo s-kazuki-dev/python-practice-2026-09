@@ -16,7 +16,8 @@ from record_utils import(
     filter_records_by_date_range,
     calculate_date_range_total,
     calculate_date_range_average,
-    calculate_date_range_summary
+    calculate_date_range_summary,
+    count_study_days
 )
 
 def create_test_records():
@@ -286,7 +287,8 @@ def test_calculate_date_range_summary(sample_records):
         "total": 270,
         "average": 90.0,
         "top_subject": "Python",
-        "top_minutes": 210
+        "top_minutes": 210,
+        "study_days": 2
     }
     result = calculate_date_range_summary(records, start_date, end_date)
     assert result == expected
@@ -297,4 +299,16 @@ def test_calculate_date_range_summary_no_match(sample_records):
     end_date = "2026-10-10"
     result = calculate_date_range_summary(records, start_date, end_date)
     assert result is None
+
+def test_count_study_days(sample_records):
+    records = sample_records
+    expected = 2
+    result = count_study_days(records)
+    assert result == expected
+
+def test_count_study_days_empty():
+    records = []
+    expected = 0
+    result = count_study_days(records)
+    assert result == expected
 

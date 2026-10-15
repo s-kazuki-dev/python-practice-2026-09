@@ -10,4 +10,6 @@ class DateRangeSummary(TypedDict):
     average: float
     top_subject: str
     top_minutes: int
+    study_days: int
 
+    
