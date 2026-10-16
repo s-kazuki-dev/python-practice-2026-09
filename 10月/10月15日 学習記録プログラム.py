@@ -1,7 +1,8 @@
 
 from storage_utils import(
     load_records,
-    save_records
+    save_records,
+    export_records_to_csv
 )
 
 from datetime import datetime
@@ -309,6 +310,7 @@ def show_menu():
     print('21.期間内の平均学習時間を見る')
     print('22.期間内の学習サマリーを見る')
     print('23.学習日数を見る')
+    print('24.CSVに書き出す')
     print('0.終了')
     print('----------------')
 
@@ -363,6 +365,9 @@ def run_menu(records):
             run_date_range_action(records, show_date_range_summary)
         elif number == 23:
             show_study_days(records)
+        elif number == 24:
+            export_records_to_csv(records)
+            print('CSVに書き出しました')
         elif number == 0:
             save_records(records)
             print('データを保存して終了します')
