@@ -17,7 +17,8 @@ from record_utils import(
     calculate_date_range_total,
     calculate_date_range_average,
     calculate_date_range_summary,
-    count_study_days
+    count_study_days,
+    convert_minutes_to_hours
 )
 
 def create_test_records():
@@ -311,4 +312,24 @@ def test_count_study_days_empty():
     expected = 0
     result = count_study_days(records)
     assert result == expected
+
+def test_convert_minutes_to_hours():
+    totals = {
+        "Python": 210,
+        "基本情報": 60
+    }
+    expected = {
+        "Python": 3.5,
+        "基本情報": 1.0
+    }
+    result = convert_minutes_to_hours(totals)
+    assert result == expected
+
+def test_find_top_subject_tie():
+    records: list[Record] = [
+        {"date": "2026-10-16", "subject": "Python", "minutes": 60},
+        {"date": "2026-10-16", "subject": "SQL", "minutes": 60}
+    ]
+    result = find_top_subject(records)
+    assert result == ("Python", 60)
 

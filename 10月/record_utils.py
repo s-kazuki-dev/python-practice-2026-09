@@ -5,26 +5,27 @@ from typing import Literal
 
 #科目ごとの絞り込み
 def filter_records_by_subject(records: list[Record], keyword: str) -> list[Record]:
-    filtered_records = []
-    for record in records:
-        if keyword in record["subject"]:
-            filtered_records.append(record)
+    filtered_records = [
+        record for record in records
+        if keyword in record["subject"]
+    ]
     return filtered_records
 
 #日付ごとの絞り込み
 def filter_records_by_date(records: list[Record], date: str) -> list[Record]:
-    filtered_records = []
-    for record in records:
-        if record["date"] == date:
-            filtered_records.append(record)
+    filtered_records = [
+        record for record in records
+        if record["date"] == date
+    ]
     return filtered_records
 
 #合計学習時間
 def calculate_total_minutes(records: list[Record]) -> int:
-    total = 0
-    for record in records:
-        total += record["minutes"]
-    return total
+    total = [
+        record["minutes"] for record in records
+    ]
+    result = sum(total)
+    return result
 
 #合計学習時間(科目ごと)
 def calculate_subject_totals(records: list[Record]) -> dict[str, int]:
@@ -58,20 +59,14 @@ def find_top_subject(records: list[Record]) -> tuple[str, int] | None:
     if not records:
         return None
     result = calculate_subject_totals(records)
-    max_minutes = -1
-    max_subject = ""
-    for subject, minutes in result.items():
-        if minutes > max_minutes:
-            max_minutes = minutes
-            max_subject = subject
+    max_subject = max(result, key=lambda subject: result[subject])
+    return (max_subject, result[max_subject])
     
-    return (max_subject, max_minutes)
-
 def filter_records_by_date_range(records: list[Record], start_date: str, end_date: str) -> list[Record]:
-    result = []
-    for record in records:
-        if start_date <= record["date"] <= end_date:
-            result.append(record)
+    result = [
+        record for record in records 
+        if start_date <= record["date"] <= end_date
+    ]
     return result
 
 def calculate_date_range_total(records: list[Record], start_date: str, end_date: str) -> int:
@@ -104,9 +99,16 @@ def calculate_date_range_summary(records: list[Record], start_date: str, end_dat
     }
 
 def count_study_days(records: list[Record]) -> int:
-    dates: set[str] = set()
-    for record in records:
-        dates.add(record["date"])
+    dates: set[str] = {
+        record["date"] for record in records
+    }
     count = len(dates)
     return count
+
+def convert_minutes_to_hours(totals: dict[str, int]) -> dict[str, float]:
+    result = {
+        subject: minutes / 60 for subject, minutes in totals.items()
+    }
+    return result
+
 
