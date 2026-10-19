@@ -21,11 +21,7 @@ def filter_records_by_date(records: list[Record], date: str) -> list[Record]:
 
 #合計学習時間
 def calculate_total_minutes(records: list[Record]) -> int:
-    total = [
-        record["minutes"] for record in records
-    ]
-    result = sum(total)
-    return result
+    return sum(record["minutes"] for record in records)
 
 #合計学習時間(科目ごと)
 def calculate_subject_totals(records: list[Record]) -> dict[str, int]:
@@ -49,10 +45,7 @@ def calculate_date_totals(records: list[Record]) -> dict[str, int]:
 def calculate_totals_by_key(records: list[Record], key: Literal["subject", "date"]) -> dict[str, int]:
     totals = {}
     for record in records:
-        if record[key] not in totals:
-            totals[record[key]] = record["minutes"]
-        else:
-            totals[record[key]] += record["minutes"]
+        totals[record[key]] = totals.get(record[key], 0) + record["minutes"]
     return totals
 
 def find_top_subject(records: list[Record]) -> tuple[str, int] | None:
@@ -111,4 +104,18 @@ def convert_minutes_to_hours(totals: dict[str, int]) -> dict[str, float]:
     }
     return result
 
+def has_subject(records: list[Record], subject: str) -> bool:
+    return any(record["subject"] == subject for record in records)
+    
+def all_records_have_positive_minutes(records: list[Record]) -> bool:
+    return all(record["minutes"] > 0 for record in records)
+    
+def find_first_record_by_subject(records: list[Record], subject: str) -> Record | None:
+    return next((record for record in records if record["subject"] == subject), None)
+
+def sort_records_by_minutes(records: list[Record], reverse: bool = False) -> list[Record]:
+    return sorted(records, key=lambda record: record["minutes"], reverse=reverse)
+
+def sort_records_by_date_and_minutes(records: list[Record]) -> list[Record]:
+    return sorted(records, key=lambda record: (record["date"], record["minutes"]))
 

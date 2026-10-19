@@ -18,7 +18,12 @@ from record_utils import(
     calculate_date_range_average,
     calculate_date_range_summary,
     count_study_days,
-    convert_minutes_to_hours
+    convert_minutes_to_hours,
+    has_subject,
+    all_records_have_positive_minutes,
+    find_first_record_by_subject,
+    sort_records_by_minutes,
+    sort_records_by_date_and_minutes
 )
 
 def create_test_records():
@@ -332,4 +337,92 @@ def test_find_top_subject_tie():
     ]
     result = find_top_subject(records)
     assert result == ("Python", 60)
+
+def test_has_subject_found(sample_records):
+    result = has_subject(sample_records, "Python")
+    assert result == True
+
+def test_has_subject_not_found(sample_records):
+    result = has_subject(sample_records, "SQL")
+    assert result == False
+
+def test_all_records_have_positive_minutes_true(sample_records):
+    result = all_records_have_positive_minutes(sample_records)
+    assert result is True
+
+def test_all_records_have_positive_minutes_false():
+    records: list[Record] = [
+        {"date": "2026-10-16", "subject": "Python", "minutes": 60},
+        {"date": "2026-10-16", "subject": "SQL", "minutes": 0}
+    ]
+    result = all_records_have_positive_minutes(records)
+    assert result is False
+
+def test_has_subject_empty():
+    result = has_subject([], "Python")
+    assert result is False
+
+def test_all_records_have_positive_minutes_empty():
+    result = all_records_have_positive_minutes([])
+    assert result is True
+
+def test_find_first_record_by_subject_found():
+    records: list[Record] = [
+        {"date": "2026-10-06", "subject": "Python", "minutes": 90},
+        {"date": "2026-10-07", "subject": "Python", "minutes": 120},
+        {"date": "2026-10-07", "subject": "基本情報", "minutes": 60}
+    ]
+    result = find_first_record_by_subject(records, "Python")
+    assert result == {"date": "2026-10-06", "subject": "Python", "minutes": 90}
+
+def test_find_first_record_by_subject_not_found():
+    records: list[Record] = [
+        {"date": "2026-10-06", "subject": "Python", "minutes": 90},
+        {"date": "2026-10-07", "subject": "Python", "minutes": 120}
+    ]
+    result = find_first_record_by_subject(records, "基本情報")
+    assert result is None
+
+def test_sort_records_by_minutes():
+    records: list[Record] = [
+        {"date": "2026-10-06", "subject": "Python", "minutes": 90},
+        {"date": "2026-10-07", "subject": "Python", "minutes": 120},
+        {"date": "2026-10-07", "subject": "基本情報", "minutes": 60}
+    ]
+    expected = [
+        {"date": "2026-10-07", "subject": "基本情報", "minutes": 60},
+        {"date": "2026-10-06", "subject": "Python", "minutes": 90},
+        {"date": "2026-10-07", "subject": "Python", "minutes": 120}
+    ]
+    result = sort_records_by_minutes(records)
+    assert result == expected
+
+def test_sort_records_by_minutes_desc():
+    records: list[Record] = [
+        {"date": "2026-10-06", "subject": "Python", "minutes": 90},
+        {"date": "2026-10-07", "subject": "Python", "minutes": 120},
+        {"date": "2026-10-07", "subject": "基本情報", "minutes": 60}
+        ]
+    expected = [
+        {"date": "2026-10-07", "subject": "Python", "minutes": 120},
+        {"date": "2026-10-06", "subject": "Python", "minutes": 90},
+        {"date": "2026-10-07", "subject": "基本情報", "minutes": 60}
+        ]
+    result = sort_records_by_minutes(records, reverse=True)
+    assert result == expected
+
+def test_sort_records_by_date_and_minutes():
+    records: list[Record] = [
+        {"date": "2026-10-20", "subject": "Python", "minutes": 60},
+        {"date": "2026-10-19", "subject": "SQL", "minutes": 120},
+        {"date": "2026-10-19", "subject": "Python", "minutes": 90}
+        ]
+    expected = [
+        {"date": "2026-10-19", "subject": "Python", "minutes": 90},
+        {"date": "2026-10-19", "subject": "SQL", "minutes": 120},
+        {"date": "2026-10-20", "subject": "Python", "minutes": 60}
+        ]
+    result = sort_records_by_date_and_minutes(records)
+    assert result == expected
+
 
