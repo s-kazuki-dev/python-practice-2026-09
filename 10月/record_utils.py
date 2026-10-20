@@ -170,3 +170,10 @@ def update_record_date(record: Record, date: str) -> None:
     validate_date(date)
     record["date"] = date
 
+def delete_record_by_index(
+        records: list[Record],
+        index:int
+) -> Record:
+    deleted_records = records.pop(index)
+    return deleted_records
+

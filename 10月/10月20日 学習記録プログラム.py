@@ -12,11 +12,12 @@ from record_utils import(
     filter_records_by_date,
     calculate_total_minutes,
     calculate_subject_totals,
-    calculate_date_totals,
     add_record,
     update_record_subject,
     update_record_minutes,
-    update_record_date
+    update_record_date,
+    delete_record_by_index,
+    find_top_subject
 )
 
 from display_utils import (
@@ -27,7 +28,10 @@ from display_utils import (
     show_date_range_total,
     show_date_range_average,
     show_date_range_summary,
-    show_study_days
+    show_study_days,
+    show_records,
+    show_numbered_records,
+    show_menu
 )
 from input_utils import(
     input_integer,
@@ -38,19 +42,6 @@ from input_utils import(
 from collections.abc import Callable
 from record_types import Record
 
-def show_records(records):
-    if not records:
-        print('記録がありません')
-        return
-    for record in records:
-        print(f'日付:{record["date"]},科目:{record["subject"]},学習時間:{record["minutes"]}分')
-
-def show_numbered_records(records):
-    if not records:
-        print('記録がありません')
-        return
-    for number, record in enumerate(records, start=1):
-        print(f'{number}.日付:{record["date"]},科目:{record["subject"]},学習時間:{record["minutes"]}分')
 
 def input_add_records(records):
     date = input_date('日付を入力(例:2026-10-06)/0で中止')
@@ -131,8 +122,7 @@ def delete_record(records):
             print('中止しました')
             return
         elif 1 <= number <= len(records):
-            deleted_record = records[number-1]
-            del records[number-1]
+            deleted_record = delete_record_by_index(records, number - 1)
             print(f'{deleted_record["subject"]}の記録を削除しました')
             break
         else:
@@ -222,19 +212,13 @@ def show_date_total(records):
     total = calculate_total_minutes(filtered_records)
     print(f'{date}の合計学習時間:{total}分')
 
-def show_top_subject(records):
-    if not records:
+def show_top_subject_action(records):
+    result = find_top_subject(records)
+    if result is None:
         print('記録がありません')
         return
-    totals = calculate_subject_totals(records)
-    top_subject = None
-    top_minutes = 0
-    for subject in totals:
-        if totals[subject] > top_minutes:
-            top_subject = subject
-            top_minutes = totals[subject]
-    print(f'最も学習時間が長い科目:{top_subject}')
-    print(f'合計学習時間:{top_minutes}分')
+    subject, minutes = result
+    show_top_subject(subject, minutes)
 
 def show_subject_ranking(records):
     if not records:
@@ -294,35 +278,6 @@ def run_date_range_action(
     start_date, end_date = date_range
     action(records, start_date, end_date)
 
-def show_menu():
-    print('---------------')
-    print('1.学習記録を見る')
-    print('2.学習記録を追加する')
-    print('3.科目から検索する')
-    print('4.合計学習時間を見る')
-    print('5.科目ごとの合計学習時間を見る')
-    print('6.データを保存する')
-    print('7.学習記録を削除する')
-    print('8.学習記録を編集する')
-    print('9.指定した科目の合計時間を見る')
-    print('10.最も学習時間が長い科目を見る')
-    print('11.科目別ランキングを見る')
-    print('12.日付から記録を検索する')
-    print('13.指定した日付の合計学習時間を見る')
-    print('14.指定した日の科目別学習時間を見る')
-    print('15.指定した日付と科目の記録を見る')
-    print('16.日付ごとの学習一覧')
-    print('17.平均学習時間を見る')
-    print('18.最も学習した科目を見る')
-    print('19.期間を指定して学習記録を見る')
-    print('20.期間内の合計学習時間を見る')
-    print('21.期間内の平均学習時間を見る')
-    print('22.期間内の学習サマリーを見る')
-    print('23.学習日数を見る')
-    print('24.CSVに書き出す')
-    print('0.終了')
-    print('----------------')
-
 def run_menu(records):
     while True:
         show_menu()
@@ -347,7 +302,7 @@ def run_menu(records):
         elif number == 9:
             show_selected_subject_total(records)
         elif number == 10:
-            show_top_subject(records)
+            show_top_subject_action(records)
         elif number == 11:
             show_subject_ranking(records)
         elif number == 12:
@@ -363,7 +318,7 @@ def run_menu(records):
         elif number == 17:
             show_average_minutes(records)
         elif number == 18:
-            show_top_subject(records)
+            show_top_subject_action(records)
         elif number == 19:
             run_date_range_action(records, show_records_by_date_range)
         elif number == 20:

@@ -30,7 +30,8 @@ from record_utils import(
     add_record,
     update_record_subject,
     update_record_minutes,
-    update_record_date
+    update_record_date,
+    delete_record_by_index
 )
 
 def create_test_records():
@@ -565,4 +566,25 @@ def test_update_record_date_invalid():
     with pytest.raises(ValueError):
         update_record_date(record, "2026-13-40")
     assert record["date"] == "2026-10-20"
+
+def test_delete_record_by_index():
+    records: list[Record] = [
+        {"date": "2026-10-20", "subject": "Python", "minutes": 90},
+        {"date": "2026-10-20", "subject": "SQL", "minutes": 60}
+    ]
+    deleted_record = delete_record_by_index(records, 0)
+    assert deleted_record == {"date": "2026-10-20", "subject": "Python", "minutes": 90}
+    assert records == [{"date": "2026-10-20", "subject": "SQL", "minutes": 60}]
+
+def test_delete_record_by_index_invalid():
+    records: list[Record] = [
+        {"date": "2026-10-20", "subject": "Python", "minutes": 90},
+        {"date": "2026-10-20", "subject": "SQL", "minutes": 60}
+    ]
+    with pytest.raises(IndexError):
+        delete_record_by_index(records, 5)
+    assert records == [
+        {"date": "2026-10-20", "subject": "Python", "minutes": 90},
+        {"date": "2026-10-20", "subject": "SQL", "minutes": 60}
+    ]
 
