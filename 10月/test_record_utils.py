@@ -23,7 +23,10 @@ from record_utils import(
     all_records_have_positive_minutes,
     find_first_record_by_subject,
     sort_records_by_minutes,
-    sort_records_by_date_and_minutes
+    sort_records_by_date_and_minutes,
+    validate_minutes,
+    create_record,
+    normalize_subject
 )
 
 def create_test_records():
@@ -425,4 +428,63 @@ def test_sort_records_by_date_and_minutes():
     result = sort_records_by_date_and_minutes(records)
     assert result == expected
 
+
+def test_sort_records_by_minutes_rejects_positional_reverse():
+    records: list[Record] = [
+    {"date": "2026-10-20", "subject": "Python", "minutes": 90}
+    ]
+    with pytest.raises(TypeError):
+        sort_records_by_minutes(records, True) #type: ignore
+
+def test_validate_minutes_valid():
+    minutes = 60
+    validate_minutes(minutes)
+
+def test_validate_minutes_invalid():
+    minutes = -10
+    with pytest.raises(ValueError) as exc_info:
+        validate_minutes(minutes)
+    assert str(exc_info.value) == "学習時間は0以上にしてください"
+
+def test_create_record_valid():
+    expected = {
+    "date": "2026-10-20",
+    "subject": "Python",
+    "minutes": 90
+    }
+    result = create_record("2026-10-20", "Python", 90)
+    assert result == expected
+
+def test_create_record_invalid_minutes():
+    with pytest.raises(ValueError):
+        create_record("2026-10-20", "Python", -10)
+
+def test_create_record_invalid_subject():
+    with pytest.raises(ValueError):
+        create_record("2026-10-20", "", 90)
+
+def test_create_record_subject_only_spaces():
+    with pytest.raises(ValueError):
+        create_record("2026-10-20", "   ", 90)
+
+def test_create_record_invalid_date():
+    with pytest.raises(ValueError):
+        create_record("2026-13-40", "Python", 90)
+
+def test_create_record_invalid_date_format():
+    with pytest.raises(ValueError):
+        create_record("2026-1-2", "Python", 90)
+
+def test_create_record_normalizes_subject():
+    expected = {
+    "date": "2026-10-20",
+    "subject": "Python",
+    "minutes": 90
+    }
+    result = create_record("2026-10-20", "   Python   ", 90)
+    assert result == expected
+
+def test_normalize_subject():
+    result = normalize_subject("   Python   ")
+    assert result == "Python"
 

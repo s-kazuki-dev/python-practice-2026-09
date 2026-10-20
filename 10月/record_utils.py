@@ -3,6 +3,8 @@ from record_types import Record, DateRangeSummary
 
 from typing import Literal
 
+from datetime import datetime
+
 #科目ごとの絞り込み
 def filter_records_by_subject(records: list[Record], keyword: str) -> list[Record]:
     filtered_records = [
@@ -113,9 +115,41 @@ def all_records_have_positive_minutes(records: list[Record]) -> bool:
 def find_first_record_by_subject(records: list[Record], subject: str) -> Record | None:
     return next((record for record in records if record["subject"] == subject), None)
 
-def sort_records_by_minutes(records: list[Record], reverse: bool = False) -> list[Record]:
+def sort_records_by_minutes(records: list[Record], *,  reverse: bool = False) -> list[Record]:
     return sorted(records, key=lambda record: record["minutes"], reverse=reverse)
 
 def sort_records_by_date_and_minutes(records: list[Record]) -> list[Record]:
     return sorted(records, key=lambda record: (record["date"], record["minutes"]))
+
+def validate_minutes(minutes: int) -> None:
+    if minutes < 0:
+        raise ValueError("学習時間は0以上にしてください")
+
+def validate_subject(subject: str) -> None:
+    if subject.strip() == "":
+        raise ValueError("科目名を入力してください")
+
+def validate_date(date: str) -> None:
+    try:
+        parsed_date = datetime.strptime(date, "%Y-%m-%d")
+    except ValueError:
+        raise ValueError("日付はYYYY-MM-DD形式で入力してください")
+    if parsed_date.strftime("%Y-%m-%d") != date:
+        raise ValueError("日付はYYYY-MM-DD形式で入力してください")
+
+def create_record(date: str, subject: str, minutes: int) -> Record:
+    normalized_subject = normalize_subject(subject)
+    validate_minutes(minutes)
+    validate_subject(normalized_subject)
+    validate_date(date)
+    record: Record = {
+        "date": date,
+        "subject": normalized_subject,
+        "minutes": minutes
+    }
+    return record
+
+def normalize_subject(subject: str) -> str:
+    normalized_subject = subject.strip()
+    return normalized_subject
 
