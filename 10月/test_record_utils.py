@@ -26,7 +26,11 @@ from record_utils import(
     sort_records_by_date_and_minutes,
     validate_minutes,
     create_record,
-    normalize_subject
+    normalize_subject,
+    add_record,
+    update_record_subject,
+    update_record_minutes,
+    update_record_date
 )
 
 def create_test_records():
@@ -487,4 +491,78 @@ def test_create_record_normalizes_subject():
 def test_normalize_subject():
     result = normalize_subject("   Python   ")
     assert result == "Python"
+
+def test_add_record():
+    records: list[Record] = []
+    add_record(records, "2026-10-20", "Python", 90)
+    assert records == [
+    {"date": "2026-10-20", "subject": "Python", "minutes": 90}
+    ]
+
+def test_add_record_invalid_minutes():
+    records: list[Record] = []
+    with pytest.raises(ValueError):
+        add_record(records, "2026-10-20", "Python", -10)
+    assert records == []
+
+def test_update_record_subject():
+    record: Record = {
+    "date": "2026-10-20",
+    "subject": "Python",
+    "minutes": 90
+    }
+    update_record_subject(record, "SQL")
+    assert record == {
+    "date": "2026-10-20",
+    "subject": "SQL",
+    "minutes": 90
+    }
+
+def test_update_record_subject_invalid():
+    record: Record = {
+        "date": "2026-10-20",
+        "subject": "Python",
+        "minutes": 90
+    }
+    with pytest.raises(ValueError):
+        update_record_subject(record, "   ")
+    assert record["subject"] == "Python"
+
+def test_update_record_minutes():
+    record: Record = {
+        "date": "2026-10-20",
+        "subject": "Python",
+        "minutes": 90
+    }
+    update_record_minutes(record, 120)
+    assert record["minutes"] == 120
+
+def test_update_record_minutes_invalid():
+    record: Record = {
+        "date": "2026-10-20",
+        "subject": "Python",
+        "minutes": 90
+    }
+    with pytest.raises(ValueError):
+        update_record_minutes(record, -10)
+    assert record["minutes"] == 90
+
+def test_update_record_date():
+    record: Record = {
+        "date": "2026-10-20",
+        "subject": "Python",
+        "minutes": 90
+    }
+    update_record_date(record, "2026-10-21")
+    assert record["date"] == "2026-10-21"
+
+def test_update_record_date_invalid():
+    record: Record ={
+        "date": "2026-10-20",
+        "subject": "Python",
+        "minutes": 90
+    }
+    with pytest.raises(ValueError):
+        update_record_date(record, "2026-13-40")
+    assert record["date"] == "2026-10-20"
 

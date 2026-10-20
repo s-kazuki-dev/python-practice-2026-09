@@ -153,3 +153,20 @@ def normalize_subject(subject: str) -> str:
     normalized_subject = subject.strip()
     return normalized_subject
 
+def add_record(records: list[Record], date: str, subject: str, minutes: int) -> None:
+    new_record = create_record(date, subject, minutes)
+    records.append(new_record)
+
+def update_record_subject(record: Record, subject: str) -> None:
+    normalized_subject = normalize_subject(subject)
+    validate_subject(normalized_subject)
+    record["subject"] = normalized_subject
+
+def update_record_minutes(record: Record, minutes: int) -> None:
+    validate_minutes(minutes)
+    record["minutes"] = minutes
+
+def update_record_date(record: Record, date: str) -> None:
+    validate_date(date)
+    record["date"] = date
+
