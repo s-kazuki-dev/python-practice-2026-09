@@ -2,13 +2,12 @@
 from record_utils import (
     calculate_date_totals,
     calculate_average_minutes,
-    find_top_subject,
     filter_records_by_date_range,
     calculate_date_range_total,
     calculate_date_range_average,
-    calculate_total_minutes,
     calculate_date_range_summary,
-    count_study_days
+    count_study_days,
+    sort_subject_totals_desc
 )
 
 from record_types import Record
@@ -105,4 +104,27 @@ def show_menu():
     print('24.CSVに書き出す')
     print('0.終了')
     print('----------------')
+
+def show_total_minutes(total: int) -> None:
+    print(f'合計学習時間:{total}分')
+
+def show_subject_totals(totals: dict[str, int]) -> None:
+    print('科目別合計学習時間')
+    for subject in totals:
+        print(f'{subject}:{totals[subject]}分')
+
+def show_selected_subject_total(subject: str, total:int) -> None:
+    print(f'{subject}の合計学習時間:{total}分')
+
+def show_date_total(date: str, total:int) -> None:
+    print(f'{date}の合計学習時間:{total}分')
+
+def show_date_subject_totals(date: str,totals: dict[str, int]) -> None:
+    print(f'{date}の科目別学習時間')
+    for subject in totals:
+        print(f'{subject}:{totals[subject]}分')
+
+def show_subject_ranking(totals: list[tuple[str, int]]) -> None:
+    for number, (subject, minutes) in enumerate(totals, start=1):
+        print(f'{number}位 {subject}:{minutes}分')
 

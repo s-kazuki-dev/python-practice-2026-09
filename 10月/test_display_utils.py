@@ -12,7 +12,13 @@ from display_utils import (
     show_study_days,
     show_records,
     show_numbered_records,
-    show_menu
+    show_menu,
+    show_total_minutes, 
+    show_subject_totals,
+    show_selected_subject_total,
+    show_date_total,
+    show_date_subject_totals,
+    show_subject_ranking
 )
 
 def test_show_date_totals(sample_records,capsys):
@@ -151,4 +157,54 @@ def test_show_menu(capsys):
     assert "1.学習記録を見る" in captured.out
     assert "24.CSVに書き出す" in captured.out
     assert "0.終了" in captured.out
+
+def test_show_total_minutes(capsys):
+    show_total_minutes(210)
+    captured = capsys.readouterr()
+    assert captured.out == "合計学習時間:210分\n"
+
+def test_show_subject_totals(capsys):
+    totals: dict[str, int] ={"Python": 210, "SQL": 60}
+    show_subject_totals(totals)
+    captured = capsys.readouterr()
+    assert captured.out == (
+        "科目別合計学習時間\n"
+        "Python:210分\n"
+        "SQL:60分\n"
+    )
+
+def test_show_selected_subject_total(capsys):
+    show_selected_subject_total("Python", 210)
+    captured = capsys.readouterr()
+    assert captured.out == "Pythonの合計学習時間:210分\n"
+
+def test_show_date_total(capsys):
+    show_date_total("2026-10-21", 90)
+    captured = capsys.readouterr()
+    assert captured.out == "2026-10-21の合計学習時間:90分\n"
+
+def test_show_date_subject_totals(capsys):
+    totals: dict[str, int] = {"Python": 90, "SQL": 60}
+    date = "2026-10-21"
+    show_date_subject_totals(date, totals)
+    captured = capsys.readouterr()
+    assert captured.out == (
+        "2026-10-21の科目別学習時間\n"
+        "Python:90分\n"
+        "SQL:60分\n"
+    )
+
+def test_show_subject_ranking(capsys):
+    ranking: list[tuple[str, int]] = [
+        ("Python", 210),
+        ("基本情報", 120),
+        ("SQL", 60)
+    ]
+    show_subject_ranking(ranking)
+    captured = capsys.readouterr()
+    assert captured.out == (
+        "1位 Python:210分\n"
+        "2位 基本情報:120分\n"
+        "3位 SQL:60分\n"
+    )
 

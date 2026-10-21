@@ -31,7 +31,9 @@ from record_utils import(
     update_record_subject,
     update_record_minutes,
     update_record_date,
-    delete_record_by_index
+    delete_record_by_index,
+    sort_subject_totals_desc,
+    calculate_subject_total
 )
 
 def create_test_records():
@@ -587,4 +589,39 @@ def test_delete_record_by_index_invalid():
         {"date": "2026-10-20", "subject": "Python", "minutes": 90},
         {"date": "2026-10-20", "subject": "SQL", "minutes": 60}
     ]
+
+def test_sort_subject_totals_desc():
+    totals: dict[str, int] = {
+        "SQL": 60,
+        "Python": 210,
+        "基本情報": 120
+    }
+    result = sort_subject_totals_desc(totals)
+    assert result == [
+        ("Python", 210),
+        ("基本情報", 120),
+        ("SQL", 60)
+    ]
+
+def test_sort_subject_totals_desc_empty():
+    result = sort_subject_totals_desc({})
+    assert result == []
+
+def test_calculate_subject_total():
+    records: list[Record] = [
+        {"date": "2026-10-20", "subject": "Python", "minutes": 90},
+        {"date": "2026-10-21", "subject": "Python", "minutes": 120},
+        {"date": "2026-10-21", "subject": "SQL", "minutes": 60}
+    ]
+    result = calculate_subject_total(records, "Python")
+    assert result == 210
+
+def test_calculate_subject_total_not_found():
+    records: list[Record] = [
+        {"date": "2026-10-20", "subject": "Python", "minutes": 90},
+        {"date": "2026-10-21", "subject": "Python", "minutes": 120},
+        {"date": "2026-10-21", "subject": "SQL", "minutes": 60}
+    ]
+    result = calculate_subject_total(records, "簿記")
+    assert result is None
 

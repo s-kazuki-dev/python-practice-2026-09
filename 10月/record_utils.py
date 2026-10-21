@@ -177,3 +177,11 @@ def delete_record_by_index(
     deleted_records = records.pop(index)
     return deleted_records
 
+def sort_subject_totals_desc(totals: dict[str, int]) -> list[tuple[str, int]]:
+    results = sorted(totals.items(), key=lambda item:item[1], reverse=True)
+    return results
+
+def calculate_subject_total(records: list[Record], subject: str) -> int | None:
+    totals = calculate_subject_totals(records)
+    return totals.get(subject)
+
