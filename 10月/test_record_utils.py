@@ -33,7 +33,8 @@ from record_utils import(
     update_record_date,
     delete_record_by_index,
     sort_subject_totals_desc,
-    calculate_subject_total
+    calculate_subject_total,
+    calculate_subject_ranking
 )
 
 def create_test_records():
@@ -624,4 +625,16 @@ def test_calculate_subject_total_not_found():
     ]
     result = calculate_subject_total(records, "簿記")
     assert result is None
+
+def test_calculate_subject_ranking():
+    records: list[Record] = [
+        {"date": "2026-10-20", "subject": "Python", "minutes": 90},
+        {"date": "2026-10-21", "subject": "SQL", "minutes": 60},
+        {"date": "2026-10-22", "subject": "Python", "minutes": 120}
+    ]
+    result = calculate_subject_ranking(records)
+    assert result == [
+        ("Python", 210),
+        ("SQL", 60)
+    ]
 

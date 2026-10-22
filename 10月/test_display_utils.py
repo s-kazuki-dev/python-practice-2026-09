@@ -18,7 +18,8 @@ from display_utils import (
     show_selected_subject_total,
     show_date_total,
     show_date_subject_totals,
-    show_subject_ranking
+    show_subject_ranking,
+    show_date_range_subject_ranking_header
 )
 
 def test_show_date_totals(sample_records,capsys):
@@ -156,6 +157,7 @@ def test_show_menu(capsys):
     captured = capsys.readouterr()
     assert "1.学習記録を見る" in captured.out
     assert "24.CSVに書き出す" in captured.out
+    assert "25.期間内の科目別ランキングを見る" in captured.out
     assert "0.終了" in captured.out
 
 def test_show_total_minutes(capsys):
@@ -207,4 +209,9 @@ def test_show_subject_ranking(capsys):
         "2位 基本情報:120分\n"
         "3位 SQL:60分\n"
     )
+
+def test_show_date_range_subject_ranking_header(capsys):
+    show_date_range_subject_ranking_header("2026-10-01", "2026-10-22")
+    captured = capsys.readouterr()
+    assert captured.out == "2026-10-01 ～ 2026-10-22 の科目別ランキング\n"
 

@@ -185,3 +185,8 @@ def calculate_subject_total(records: list[Record], subject: str) -> int | None:
     totals = calculate_subject_totals(records)
     return totals.get(subject)
 
+def calculate_subject_ranking(records: list[Record]) -> list[tuple[str, int]]:
+    totals = calculate_subject_totals(records)
+    ranking = sort_subject_totals_desc(totals)
+    return ranking
+

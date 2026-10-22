@@ -63,3 +63,36 @@ def test_input_date_range_invalid_range(monkeypatch, capsys):
     captured = capsys.readouterr()
     assert result is None
     assert "開始日は終了日以前の日付を入力してください" in captured.out
+
+def test_input_date_range_valid(monkeypatch):
+    answers = ["2026-10-20","2026-10-22"]
+    monkeypatch.setattr(
+        input_utils,
+        "input_date",
+        lambda message: answers.pop(0)
+    )
+    result = input_utils.input_date_range()
+    assert result == ("2026-10-20", "2026-10-22")
+
+def test_input_date_range_same_date(monkeypatch):
+    answers = ["2026-10-22", "2026-10-22"]
+    monkeypatch.setattr(
+        input_utils,
+        "input_date",
+        lambda message: answers.pop(0)
+    )
+    result = input_utils.input_date_range()
+    assert result == ("2026-10-22", "2026-10-22")
+
+def test_input_date_range_invalid_order(monkeypatch, capsys):
+    answers =  ["2026-10-25", "2026-10-22"]
+    monkeypatch.setattr(
+        input_utils,
+        "input_date",
+        lambda message: answers.pop(0)
+    )
+    result = input_utils.input_date_range()
+    captured = capsys.readouterr()
+    assert result is None
+    assert '開始日は終了日以前の日付を入力してください' in captured.out
+
