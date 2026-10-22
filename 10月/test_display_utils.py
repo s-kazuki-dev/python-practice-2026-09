@@ -18,8 +18,9 @@ from display_utils import (
     show_selected_subject_total,
     show_date_total,
     show_date_subject_totals,
-    show_subject_ranking,
-    show_date_range_subject_ranking_header
+    show_date_range_subject_ranking_header,
+    show_label_ranking
+   
 )
 
 def test_show_date_totals(sample_records,capsys):
@@ -158,6 +159,7 @@ def test_show_menu(capsys):
     assert "1.学習記録を見る" in captured.out
     assert "24.CSVに書き出す" in captured.out
     assert "25.期間内の科目別ランキングを見る" in captured.out
+    assert "26.日別合計学習時間ランキングを見る" in captured.out
     assert "0.終了" in captured.out
 
 def test_show_total_minutes(capsys):
@@ -197,21 +199,39 @@ def test_show_date_subject_totals(capsys):
     )
 
 def test_show_subject_ranking(capsys):
-    ranking: list[tuple[str, int]] = [
-        ("Python", 210),
-        ("基本情報", 120),
-        ("SQL", 60)
+    ranking: list[tuple[int, str, int]] = [
+        (1, "Python", 210),
+        (2, "基本情報", 60),
+        (2, "SQL", 60),
+        (4,"簿記", 30)
     ]
-    show_subject_ranking(ranking)
+    show_label_ranking(ranking)
     captured = capsys.readouterr()
     assert captured.out == (
-        "1位 Python:210分\n"
-        "2位 基本情報:120分\n"
-        "3位 SQL:60分\n"
+        "1位 Python: 210分\n"
+        "2位 基本情報: 60分\n"
+        "2位 SQL: 60分\n"
+        "4位 簿記: 30分\n"
     )
 
 def test_show_date_range_subject_ranking_header(capsys):
     show_date_range_subject_ranking_header("2026-10-01", "2026-10-22")
     captured = capsys.readouterr()
     assert captured.out == "2026-10-01 ～ 2026-10-22 の科目別ランキング\n"
+
+def test_show_date_ranking(capsys):
+    ranking: list[tuple[int, str, int]] = [
+            (1, "2026-10-22", 210),
+            (2, "2026-10-20", 120),
+            (2, "2026-10-21", 120),
+            (4, "2026-10-19", 90)
+        ]
+    show_label_ranking(ranking)
+    captured = capsys.readouterr()
+    assert captured.out == (
+        "1位 2026-10-22: 210分\n"
+        "2位 2026-10-20: 120分\n"
+        "2位 2026-10-21: 120分\n"
+        "4位 2026-10-19: 90分\n"
+    )
 

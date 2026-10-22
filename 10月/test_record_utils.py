@@ -32,9 +32,11 @@ from record_utils import(
     update_record_minutes,
     update_record_date,
     delete_record_by_index,
-    sort_subject_totals_desc,
+    sort_totals_desc,
     calculate_subject_total,
-    calculate_subject_ranking
+    calculate_subject_ranking,
+    calculate_date_ranking,
+    add_competition_ranks
 )
 
 def create_test_records():
@@ -597,7 +599,7 @@ def test_sort_subject_totals_desc():
         "Python": 210,
         "基本情報": 120
     }
-    result = sort_subject_totals_desc(totals)
+    result = sort_totals_desc(totals)
     assert result == [
         ("Python", 210),
         ("基本情報", 120),
@@ -605,7 +607,7 @@ def test_sort_subject_totals_desc():
     ]
 
 def test_sort_subject_totals_desc_empty():
-    result = sort_subject_totals_desc({})
+    result = sort_totals_desc({})
     assert result == []
 
 def test_calculate_subject_total():
@@ -636,5 +638,32 @@ def test_calculate_subject_ranking():
     assert result == [
         ("Python", 210),
         ("SQL", 60)
+    ]
+
+def test_calculate_date_ranking():
+    records: list[Record] = [
+        {"date": "2026-10-21", "subject": "Python", "minutes": 90},
+        {"date": "2026-10-21", "subject": "SQL", "minutes": 60},
+        {"date": "2026-10-22", "subject": "Python", "minutes": 120}
+    ]
+    result = calculate_date_ranking(records)
+    assert result == [
+        ("2026-10-21", 150),
+        ("2026-10-22", 120)
+    ]
+
+def test_add_competition_ranks():
+    ranking = [
+        ("2026-10-21", 150),
+        ("2026-10-22", 120),
+        ("2026-10-19", 120),
+        ("2026-10-20", 60)
+    ]
+    result = add_competition_ranks(ranking)
+    assert result == [
+        (1, "2026-10-21", 150),
+        (2, "2026-10-22", 120),
+        (2, "2026-10-19", 120),
+        (4, "2026-10-20", 60)
     ]
 

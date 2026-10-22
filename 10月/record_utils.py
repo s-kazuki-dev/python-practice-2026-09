@@ -177,7 +177,7 @@ def delete_record_by_index(
     deleted_records = records.pop(index)
     return deleted_records
 
-def sort_subject_totals_desc(totals: dict[str, int]) -> list[tuple[str, int]]:
+def sort_totals_desc(totals: dict[str, int]) -> list[tuple[str, int]]:
     results = sorted(totals.items(), key=lambda item:item[1], reverse=True)
     return results
 
@@ -187,6 +187,22 @@ def calculate_subject_total(records: list[Record], subject: str) -> int | None:
 
 def calculate_subject_ranking(records: list[Record]) -> list[tuple[str, int]]:
     totals = calculate_subject_totals(records)
-    ranking = sort_subject_totals_desc(totals)
+    ranking = sort_totals_desc(totals)
     return ranking
+
+def calculate_date_ranking(records: list[Record]) -> list[tuple[str, int]]:
+    totals = calculate_date_totals(records)
+    ranking = sort_totals_desc(totals)
+    return ranking
+
+def add_competition_ranks(ranking: list[tuple[str, int]]) -> list[tuple[int, str, int]]:
+    previous_minutes = None
+    rank = 0
+    results: list[tuple[int, str, int]] = []
+    for number, (label, minutes) in enumerate(ranking, start=1):
+        if previous_minutes != minutes:
+            rank = number
+        results.append((rank, label, minutes))
+        previous_minutes = minutes
+    return results
 

@@ -7,7 +7,9 @@ from record_utils import (
     calculate_date_range_average,
     calculate_date_range_summary,
     count_study_days,
-    sort_subject_totals_desc
+    sort_totals_desc,
+    calculate_date_ranking,
+    add_competition_ranks
 )
 
 from record_types import Record
@@ -103,6 +105,7 @@ def show_menu():
     print('23.学習日数を見る')
     print('24.CSVに書き出す')
     print('25.期間内の科目別ランキングを見る')
+    print('26.日別合計学習時間ランキングを見る')
     print('0.終了')
     print('----------------')
 
@@ -125,10 +128,10 @@ def show_date_subject_totals(date: str,totals: dict[str, int]) -> None:
     for subject in totals:
         print(f'{subject}:{totals[subject]}分')
 
-def show_subject_ranking(totals: list[tuple[str, int]]) -> None:
-    for number, (subject, minutes) in enumerate(totals, start=1):
-        print(f'{number}位 {subject}:{minutes}分')
-
 def show_date_range_subject_ranking_header(start_date: str, end_date: str) -> None:
     print(f'{start_date} ～ {end_date} の科目別ランキング')
+
+def show_label_ranking(ranking: list[tuple[int, str, int]]) -> None:
+    for rank, label, minutes in ranking:
+        print(f'{rank}位 {label}: {minutes}分')
 

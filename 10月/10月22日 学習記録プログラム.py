@@ -20,7 +20,9 @@ from record_utils import(
     find_top_subject,
     calculate_subject_total,
     filter_records_by_date_range,
-    calculate_subject_ranking
+    calculate_subject_ranking,
+    calculate_date_ranking,
+    add_competition_ranks
 )
 
 from display_utils import (
@@ -40,8 +42,8 @@ from display_utils import (
     show_selected_subject_total,
     show_date_total,
     show_date_subject_totals,
-    show_subject_ranking,
-    show_date_range_subject_ranking_header
+    show_date_range_subject_ranking_header,
+    show_label_ranking
 )
 from input_utils import(
     input_integer,
@@ -233,7 +235,8 @@ def show_subject_ranking_action(records):
         print('記録がありません')
         return
     ranking = calculate_subject_ranking(records)
-    show_subject_ranking(ranking)
+    ranked_data = add_competition_ranks(ranking)
+    show_label_ranking(ranked_data)
 
 def show_date_subject_totals_action(records):
     if not records:
@@ -290,8 +293,17 @@ def show_date_range_subject_ranking_action(records):
         print('その期間の記録はありません')
         return
     ranking = calculate_subject_ranking(filtered_records)
+    ranked_data = add_competition_ranks(ranking)
     show_date_range_subject_ranking_header(start_date, end_date)
-    show_subject_ranking(ranking)
+    show_label_ranking(ranked_data)
+
+def show_date_ranking_action(records):
+    if not records:
+        print('記録がありません')
+        return
+    ranking = calculate_date_ranking(records)
+    ranked_data = add_competition_ranks(ranking)
+    show_label_ranking(ranked_data)
 
 def run_menu(records):
     while True:
@@ -349,6 +361,8 @@ def run_menu(records):
             print('CSVに書き出しました')
         elif number == 25:
             show_date_range_subject_ranking_action(records)
+        elif number == 26:
+            show_date_ranking_action(records)
         elif number == 0:
             save_records(records)
             print('データを保存して終了します')
