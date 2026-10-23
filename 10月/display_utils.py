@@ -106,6 +106,8 @@ def show_menu():
     print('24.CSVに書き出す')
     print('25.期間内の科目別ランキングを見る')
     print('26.日別合計学習時間ランキングを見る')
+    print('27.指定した期間内の日別学習時間ランキングを見る')
+    print('28.指定した科目の日別学習時間ランキングを見る')
     print('0.終了')
     print('----------------')
 
@@ -128,10 +130,14 @@ def show_date_subject_totals(date: str,totals: dict[str, int]) -> None:
     for subject in totals:
         print(f'{subject}:{totals[subject]}分')
 
-def show_date_range_subject_ranking_header(start_date: str, end_date: str) -> None:
-    print(f'{start_date} ～ {end_date} の科目別ランキング')
+def show_date_range_label_ranking_header(start_date: str, end_date: str, label: str) -> None:
+    print(f'{start_date} ～ {end_date} の{label}別ランキング')
 
 def show_label_ranking(ranking: list[tuple[int, str, int]]) -> None:
     for rank, label, minutes in ranking:
         print(f'{rank}位 {label}: {minutes}分')
+
+def show_selected_subject_ranking_by_date_header(subject: str) -> None:
+    print(f'{subject}の日別学習時間ランキング')
+
 

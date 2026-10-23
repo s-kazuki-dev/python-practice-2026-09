@@ -34,3 +34,13 @@ def input_date_range() -> tuple[str, str] | None:
         return None
     return (start_date, end_date)
 
+def input_subject(message: str) -> str | None:
+    subject = input(message).strip()
+    if subject == "0":
+        print('中止しました')
+        return None
+    elif subject == "":
+        print('科目名を入力してください')
+        return None
+    return subject
+

@@ -96,3 +96,32 @@ def test_input_date_range_invalid_order(monkeypatch, capsys):
     assert result is None
     assert '開始日は終了日以前の日付を入力してください' in captured.out
 
+def test_input_subject_valid(monkeypatch):
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda message: "Python"
+    )
+    result = input_utils.input_subject("科目名を入力/0で中止:")
+    assert result == "Python"
+
+def test_input_subject_cancel(monkeypatch, capsys):
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda message: "0"
+    )
+    result = input_utils.input_subject("科目名を入力/0で中止:")
+    captured = capsys.readouterr()
+    assert result is None
+    assert "中止しました" in captured.out 
+
+def test_input_subject_blank(monkeypatch, capsys):
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda message: "   "
+    )
+    result = input_utils.input_subject("科目名を入力/0で中止:")
+    captured = capsys.readouterr()
+    assert result is None
+    assert "科目名を入力してください" in captured.out
+
+

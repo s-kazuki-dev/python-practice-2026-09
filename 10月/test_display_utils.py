@@ -18,8 +18,9 @@ from display_utils import (
     show_selected_subject_total,
     show_date_total,
     show_date_subject_totals,
-    show_date_range_subject_ranking_header,
-    show_label_ranking
+    show_date_range_label_ranking_header,
+    show_label_ranking,
+    show_selected_subject_ranking_by_date_header
    
 )
 
@@ -214,10 +215,15 @@ def test_show_subject_ranking(capsys):
         "4位 簿記: 30分\n"
     )
 
-def test_show_date_range_subject_ranking_header(capsys):
-    show_date_range_subject_ranking_header("2026-10-01", "2026-10-22")
+def test_show_date_range_label_ranking_header_subject(capsys):
+    show_date_range_label_ranking_header("2026-10-01", "2026-10-22", "科目")
     captured = capsys.readouterr()
     assert captured.out == "2026-10-01 ～ 2026-10-22 の科目別ランキング\n"
+
+def test_show_date_range_label_ranking_header_date(capsys):
+    show_date_range_label_ranking_header("2026-10-01", "2026-10-22", "日付")
+    captured = capsys.readouterr()
+    assert captured.out == "2026-10-01 ～ 2026-10-22 の日付別ランキング\n"
 
 def test_show_date_ranking(capsys):
     ranking: list[tuple[int, str, int]] = [
@@ -234,4 +240,9 @@ def test_show_date_ranking(capsys):
         "2位 2026-10-21: 120分\n"
         "4位 2026-10-19: 90分\n"
     )
+
+def test_show_selected_subject_ranking_by_date_header(capsys):
+    show_selected_subject_ranking_by_date_header("Python")
+    captured = capsys.readouterr()
+    assert captured.out == "Pythonの日別学習時間ランキング\n"
 
