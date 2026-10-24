@@ -82,18 +82,35 @@ def input_add_records(records):
     print('追加しました')
     show_records(records)
 
-def search_records(records):
+def run_subject_action(records: list[Record]) -> tuple[str, list[Record]] | None:
     if not records:
         print('記録がありません')
         return
-    keyword = input_subject('科目名を入力/0で中止:')
-    if keyword is None:
+    subject = input_subject('科目名を入力/0で中止:')
+    if subject is None:
         return
-    filtered_records = filter_records_by_subject(records,keyword)
+    filtered_records = filter_records_by_subject(records, subject)
     if not filtered_records:
-        print('検索された科目の記録はありません')
+        print('その科目の記録はありません')
         return
+    return subject, filtered_records
+
+def search_records(records: list[Record]) -> None:
+    subject_data = run_subject_action(records)
+    if subject_data is None:
+        return
+    _, filtered_records = subject_data
     show_records(filtered_records)
+
+def show_selected_subject_date_ranking_action(records: list[Record]) -> None:
+    subject_data = run_subject_action(records)
+    if subject_data is None:
+        return
+    subject, filtered_records = subject_data
+    ranking = calculate_date_ranking(filtered_records)
+    ranked_data = add_competition_ranks(ranking)
+    show_selected_subject_ranking_by_date_header(subject)
+    show_label_ranking(ranked_data)
 
 def search_by_date(records):
     if not records:
@@ -195,32 +212,42 @@ def edit_record(records):
         else:
             print('正しい番号を入力してください')
 
-def show_selected_subject_total_action(records):
-    if not records:
-        print('記録がありません')
+def show_selected_subject_total_action(records: list[Record]) -> None:
+    subject_data = run_subject_action(records)
+    if subject_data is None:
         return
-    subject = input_subject('集計する科目名を入力/0で中止:')
-    if subject is None:
-        return
-    total = calculate_subject_total(records, subject)
-    if total is None:
-        print('その科目の記録はありません')
-    else:
-        show_selected_subject_total(subject, total)
+    subject, filtered_records = subject_data
+    total = calculate_total_minutes(filtered_records)
+    show_selected_subject_total(subject, total)
 
-def show_date_total_action(records):
+def run_date_action(records: list[Record]) -> tuple[str, list[Record]] | None:
     if not records:
         print('記録がありません')
         return
-    date = input_date('集計する日付を入力(例:2026-10-06)/0で中止:')
+    date = input_date('日付を入力/0で中止:')
     if date is None:
         return
-    filtered_records = filter_records_by_date(records,date)
+    filtered_records = filter_records_by_date(records, date)
     if not filtered_records:
         print('その日付の記録はありません')
         return
+    return date, filtered_records
+
+def show_date_total_action(records):
+    date_data = run_date_action(records)
+    if date_data is None:
+        return
+    date, filtered_records = date_data
     total = calculate_total_minutes(filtered_records)
     show_date_total(date, total)
+
+def show_date_subject_totals_action(records):
+    date_data = run_date_action(records)
+    if date_data is None:
+        return
+    date, filtered_records = date_data
+    results = calculate_subject_totals(filtered_records)
+    show_date_subject_totals(date, results)
 
 def show_top_subject_action(records):
     result = find_top_subject(records)
@@ -238,39 +265,16 @@ def show_subject_ranking_action(records):
     ranked_data = add_competition_ranks(ranking)
     show_label_ranking(ranked_data)
 
-def show_date_subject_totals_action(records):
-    if not records:
-        print('記録がありません')
-        return
-    date = input_date('日付を入力/0で中止:')
-    if date is None:
-        return
-    filtered_records = filter_records_by_date(records, date)
-    if not filtered_records:
-        print('その日付の記録はありません')
-        return
-    results = calculate_subject_totals(filtered_records)
-    show_date_subject_totals(date, results)
-
 def search_by_date_and_subject(records):
-    if not records:
-        print('記録がありません')
+    date_data = run_date_action(records)
+    if date_data is None:
         return
-    date = input_date('日付を入力/0で中止:')
-    if date is None:
+    _, date_records = date_data
+    subject_data = run_subject_action(date_records)
+    if subject_data is None:
         return
-    subject = input_subject('科目名を入力/0で中止:')
-    if subject is None:
-        return
-    filtered_date_records = filter_records_by_date(records,date)
-    if not filtered_date_records:
-        print('一致する記録はありません')
-        return
-    filtered_records = filter_records_by_subject(filtered_date_records,subject)
-    if not filtered_records:
-        print('一致する記録はありません')
-        return
-    show_records(filtered_records)
+    _, subject_records = subject_data
+    show_records(subject_records)
 
 def run_date_range_action(
     records: list[Record],
@@ -282,7 +286,10 @@ def run_date_range_action(
     start_date, end_date = date_range
     action(records, start_date, end_date)
 
-def show_date_range_subject_ranking_action(records):
+def show_date_range_ranking_action(
+    records: list[Record], 
+    action: Callable[ [list[Record]], list[tuple[str, int]] ], 
+    label: str) -> None:
     date_range = input_date_range()
     if date_range is None:
         return
@@ -291,10 +298,22 @@ def show_date_range_subject_ranking_action(records):
     if not filtered_records:
         print('その期間の記録はありません')
         return
-    ranking = calculate_subject_ranking(filtered_records)
+    ranking = action(filtered_records)
     ranked_data = add_competition_ranks(ranking)
-    show_date_range_label_ranking_header(start_date, end_date, "科目")
+    show_date_range_label_ranking_header(start_date, end_date, label)
     show_label_ranking(ranked_data)
+
+def show_date_range_subject_ranking_action(records: list[Record]) -> None:
+    show_date_range_ranking_action(
+        records,
+        calculate_subject_ranking, 
+        "科目")
+
+def show_date_ranking_by_range_action(records: list[Record]) -> None:
+    show_date_range_ranking_action(
+        records, 
+        calculate_date_ranking, 
+        "日付")
 
 def show_date_ranking_action(records):
     if not records:
@@ -302,33 +321,6 @@ def show_date_ranking_action(records):
         return
     ranking = calculate_date_ranking(records)
     ranked_data = add_competition_ranks(ranking)
-    show_label_ranking(ranked_data)
-
-def show_date_ranking_by_range_action(records):
-    date_range = input_date_range()
-    if date_range is None:
-        return
-    start_date, end_date = date_range
-    filtered_records = filter_records_by_date_range(records, start_date, end_date)
-    if not filtered_records:
-        print('その期間の記録はありません')
-        return
-    ranking = calculate_date_ranking(filtered_records)
-    ranked_data = add_competition_ranks(ranking)
-    show_date_range_label_ranking_header(start_date, end_date, "日付")
-    show_label_ranking(ranked_data)
-
-def show_selected_subject_date_ranking_action(records):
-    subject = input_subject('科目名を入力/0で中止:')
-    if subject is None:
-        return
-    filtered_records = filter_records_by_subject(records, subject)
-    if not filtered_records:
-        print('その科目の記録はありません')
-        return
-    ranking = calculate_date_ranking(filtered_records)
-    ranked_data = add_competition_ranks(ranking)
-    show_selected_subject_ranking_by_date_header(subject)
     show_label_ranking(ranked_data)
 
 def run_menu(records):

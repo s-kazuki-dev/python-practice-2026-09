@@ -6,10 +6,7 @@ from record_utils import (
     calculate_date_range_total,
     calculate_date_range_average,
     calculate_date_range_summary,
-    count_study_days,
-    sort_totals_desc,
-    calculate_date_ranking,
-    add_competition_ranks
+    count_study_days
 )
 
 from record_types import Record
