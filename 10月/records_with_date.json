@@ -18,5 +18,10 @@
         "date": "2026-10-07",
         "subject": "Python",
         "minutes": 120
+    },
+    {
+        "date": "2026-10-24",
+        "subject": "Python",
+        "minutes": 120
     }
 ]
