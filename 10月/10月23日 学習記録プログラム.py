@@ -315,6 +315,31 @@ def show_date_ranking_action(records: list[Record]) -> None:
     ranked_data = add_competition_ranks(ranking)
     show_label_ranking(ranked_data)
 
+def show_date_range_and_selected_subject_ranking_action(records: list[Record]) -> None:
+    if not records:
+        print('記録がありません')
+        return
+    date_data = input_date_range()
+    if date_data is None:
+        return
+    start_date, end_date = date_data
+    date_records = filter_records_by_date_range(records, start_date, end_date)
+    if not date_records:
+        print('その期間の記録はありません')
+        return
+    subject = input_subject('科目を入力/0で中止:')
+    if subject is None:
+        return
+    subject_records = filter_records_by_subject(date_records, subject)
+    if not subject_records:
+        print('指定した期間内にその科目の記録はありません')
+        return
+    ranking = calculate_date_ranking(subject_records)
+    ranked_data = add_competition_ranks(ranking)
+    print(f'{start_date} ～ {end_date}')
+    show_selected_subject_ranking_by_date_header(subject)
+    show_label_ranking(ranked_data)
+
 def run_menu(records: list[Record]) -> None:
     while True:
         show_menu()
@@ -375,6 +400,8 @@ def run_menu(records: list[Record]) -> None:
             show_date_ranking_by_range_action(records)
         elif number == 27:
             show_selected_subject_date_ranking_action(records)
+        elif number == 28:
+            show_date_range_and_selected_subject_ranking_action(records)
         elif number == 0:
             save_records(records)
             print('データを保存して終了します')

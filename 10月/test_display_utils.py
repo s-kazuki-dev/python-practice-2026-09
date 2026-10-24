@@ -161,6 +161,7 @@ def test_show_menu(capsys):
     assert "23.CSVに書き出す" in captured.out
     assert "24.期間内の科目別ランキングを見る" in captured.out
     assert "25.日別合計学習時間ランキングを見る" in captured.out
+    assert "28.指定した期間内で指定した科目の日別学習時間ランキングを見る" in captured.out
     assert "0.終了" in captured.out
 
 def test_show_total_minutes(capsys):

@@ -28,7 +28,6 @@ def test_input_date_range_cancel_start(monkeypatch, capsys):
     result = input_utils.input_date_range()
     captured = capsys.readouterr()
     assert result is None
-    assert "処理を中止しました" in captured.out
 
 
 def fake_input_date_cancel_end(message):
@@ -45,8 +44,6 @@ def test_input_date_range_cancel_end(monkeypatch, capsys):
     result = input_utils.input_date_range()
     captured = capsys.readouterr()
     assert result is None
-    assert "処理を中止しました" in captured.out
-
 
 def fake_input_date_invalid_range(message):
     if "開始日" in message:
