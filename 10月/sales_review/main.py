@@ -1,5 +1,11 @@
 import sales_data
 
+
+from sales_input import (
+    input_integer,
+    input_new_data
+)
+
 from sales_process import(
     calculate_sales,
     calculate_total_sales,
@@ -12,7 +18,8 @@ from sales_process import(
     calculate_total_quantity_by_date,
     calculate_max_sales_date,
     calculate_min_sales_date,
-    calculate_difference_by_date
+    calculate_difference_by_date,
+    add_new_data
 )
 
 from sales_display import(
@@ -21,7 +28,8 @@ from sales_display import(
     show_totals_by_product,
     show_totals_by_date,
     show_product_ranking,
-    show_compare_date
+    show_compare_date,
+    show_run_menu
 )
 #記録ごとの売上表示
 def show_sales_action(datas):
@@ -86,6 +94,33 @@ def show_compare_date_action(datas):
     min_sales = min_data[0][1]
     show_compare_date(max_date, max_sales, min_date, min_sales, difference)
 
+#売上データ登録
+def show_add_new_data_action(datas):
+    print('=====売上データ登録=====')
+    new_data = input_new_data()
+    if new_data is None:
+        return
+    date, product, price, quantity = new_data
+    add_new_data(datas, date, product, price, quantity)
+    print('売上データを登録しました')
+
+#メニュー実行
+def run_menu(datas):
+    while True:
+        show_run_menu()
+        number = input_integer('番号を入力してください')
+        if number == 1:
+            show_add_new_data_action(datas)
+        elif number == 2:
+            show_totals_action(datas)
+        elif number == 0:
+            print('中止しました')
+            return
+        else:
+            print('正しい番号を入力してください')
+    
+
+        
 
 if __name__ == "__main__":
     datas = sales_data.sales_datas
@@ -95,6 +130,5 @@ if __name__ == "__main__":
     show_sorted_total_sales_ranking_by_product_action(datas)
     show_total_by_date_action(datas)
     show_compare_date_action(datas)
-
-
+    run_menu(datas)
 

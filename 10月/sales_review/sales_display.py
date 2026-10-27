@@ -51,4 +51,13 @@ def show_compare_date(max_date: list[str], max_sales: int, min_date: list[str], 
     print(f'売上差額:   {difference}円')
     print('======================')
 
+#メニュー表示
+def show_run_menu():
+    print('=====飲食店 売上管理システム=====')
+    print('1.売上データを登録')
+    print('2.売上集計を表示')
+    print('0.終了')
+    print('===============================')
+
+
 

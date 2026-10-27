@@ -3,6 +3,14 @@ from sales_data import (
     sales_datas
 )
 
+from sales_input import (
+    input_integer,
+    input_positive_integer,
+    input_non_negative_integer,
+    input_new_data,
+    input_str
+)
+
 from sales_process import (
     calculate_total_sales_by_product,
     calculate_total_quantity_by_product,
@@ -12,7 +20,10 @@ from sales_process import (
     calculate_total_quantity_by_date,
     calculate_max_sales_date,
     calculate_min_sales_date,
-    calculate_difference_by_date
+    calculate_difference_by_date,
+    add_new_data,
+    calculate_total_sales,
+    calculate_total_quantity
     
 )
 
@@ -125,5 +136,75 @@ def test_daily_sales_comparison():
     assert result_max == expected_max
     assert result_min == expected_min
     assert result_difference == expected_difference
+
+#新データの登録と反映
+def test_add_new_data():
+    test_data = [{"date": "2026-10-26", "name": "コーヒー", "price": 400, "quantity": 2}]
+    expected_data = [
+        {"date": "2026-10-26", "name": "コーヒー", "price": 400, "quantity": 2},
+        {"date":"2026-10-27", "name": "紅茶", "price": 300, "quantity": 2}
+        ]
+    expected_sales = 1400
+    expected_quantity = 4
+    result_data = add_new_data(test_data, "2026-10-27", "紅茶", 300, 2)
+    result_sales = calculate_total_sales(result_data)
+    result_quantity = calculate_total_quantity(result_data)
+    assert result_data == expected_data
+    assert test_data == expected_data
+    assert result_sales == expected_sales
+    assert result_quantity == expected_quantity
+
+
+#input_strの入力テスト
+def test_input_str_retry(monkeypatch):
+    responses = iter(["", "       コーヒー"])
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda message: next(responses)
+    )
+    result = input_str("商品名を入力:")
+    assert result == "コーヒー"
+
+#input_integerの入力テスト
+def test_input_integer(monkeypatch):
+    responses = iter(["abc", "450"])
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda message: next(responses)
+    )
+    result = input_integer('数字を入力:')
+    assert result == 450
+
+#input_non_negative_integerの入力テスト
+def test_input_non_negative(monkeypatch):
+    responses = iter(["-100", "0"])
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda message: next(responses)
+    )
+    result = input_non_negative_integer('数字を入力:')
+    assert result == 0
+
+#input_positiveの入力テスト
+def test_input_positive(monkeypatch):
+    responses = iter(["0", "3"])
+    monkeypatch.setattr(
+        "builtins.input",
+        lambda message: next(responses)
+    )
+    result = input_positive_integer('数字を入力:')
+    assert result == 3
+
+import sales_input
+#input_new_dataの入力テスト
+def test_input_new_data(monkeypatch):
+    monkeypatch.setattr(
+        sales_input,
+        "input_str",
+        lambda message: None
+    )
+    result = sales_input.input_new_data()
+    assert result is None
+
 
 

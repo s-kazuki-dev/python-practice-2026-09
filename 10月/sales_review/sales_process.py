@@ -108,4 +108,12 @@ def calculate_difference_by_date(datas) -> int:
     min_sales = min_sales_date[0][1]
     return max_sales - min_sales
 
+#新しいデータの追加
+def add_new_data(datas, date, product, price, quantity):
+    datas.append(
+        {"date": date, "name": product, "price": price, "quantity": quantity}
+    )
+    return datas
+
+
 
