@@ -2,3 +2,4 @@ __pycache__/
 *.pyc
 .venv/
 10月/records.csv
+10月/sales_review/sales.json

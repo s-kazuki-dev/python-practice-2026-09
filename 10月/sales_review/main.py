@@ -1,5 +1,3 @@
-import sales_data
-
 
 from sales_input import (
     input_integer,
@@ -31,6 +29,12 @@ from sales_display import(
     show_compare_date,
     show_run_menu
 )
+
+from sales_storage import(
+    load_sales,
+    save_sales
+)
+
 #記録ごとの売上表示
 def show_sales_action(datas):
     if not datas:
@@ -102,6 +106,7 @@ def show_add_new_data_action(datas):
         return
     date, product, price, quantity = new_data
     add_new_data(datas, date, product, price, quantity)
+    save_sales(datas)
     print('売上データを登録しました')
 
 #メニュー実行
@@ -123,7 +128,7 @@ def run_menu(datas):
         
 
 if __name__ == "__main__":
-    datas = sales_data.sales_datas
+    datas = load_sales()
     show_sales_action(datas)
     show_totals_action(datas)
     show_totals_by_product_action(datas)

@@ -32,6 +32,13 @@ from sales_display import (
     show_totals_by_date,
     show_product_ranking
 )
+
+from sales_storage import (
+    load_sales,
+    save_sales
+)
+
+
 #空データ/売上金額
 def test_calculate_total_sales_by_product():
     test_data = []
@@ -206,5 +213,20 @@ def test_input_new_data(monkeypatch):
     result = sales_input.input_new_data()
     assert result is None
 
+#jsonファイルのテスト
+def test_save_and_load_sales(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    test_datas = [
+        {"date": "2026-10-20", "name": "コーヒー", "price": 400, "quantity": 12},
+        {"date": "2026-10-20", "name": "カレー", "price": 900, "quantity": 8},
+    ]
+    save_sales(test_datas)
+    datas = load_sales()
+    assert datas == test_datas
 
+#jsonファイルのテスト
+def test_load_sales_no_file(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    datas = load_sales()
+    assert datas == []
 
