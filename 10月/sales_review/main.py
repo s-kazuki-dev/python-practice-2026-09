@@ -118,6 +118,16 @@ def run_menu(datas):
             show_add_new_data_action(datas)
         elif number == 2:
             show_totals_action(datas)
+        elif number == 3:
+            show_totals_by_product_action(datas)
+        elif number == 4:
+            show_sorted_total_sales_ranking_by_product_action(datas)
+        elif number == 5:
+            show_total_by_date_action(datas)
+        elif number == 6:
+            show_compare_date_action(datas)
+        elif number == 7:
+            show_sales_action(datas)
         elif number == 0:
             print('中止しました')
             return
@@ -125,15 +135,9 @@ def run_menu(datas):
             print('正しい番号を入力してください')
     
 
-        
 
 if __name__ == "__main__":
     datas = load_sales()
-    show_sales_action(datas)
-    show_totals_action(datas)
-    show_totals_by_product_action(datas)
-    show_sorted_total_sales_ranking_by_product_action(datas)
-    show_total_by_date_action(datas)
-    show_compare_date_action(datas)
     run_menu(datas)
 
+    

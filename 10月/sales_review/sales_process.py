@@ -113,7 +113,6 @@ def add_new_data(datas, date, product, price, quantity):
     datas.append(
         {"date": date, "name": product, "price": price, "quantity": quantity}
     )
-    return datas
 
 
 

@@ -55,7 +55,12 @@ def show_compare_date(max_date: list[str], max_sales: int, min_date: list[str], 
 def show_run_menu():
     print('=====飲食店 売上管理システム=====')
     print('1.売上データを登録')
-    print('2.売上集計を表示')
+    print('2.全体の売上集計')
+    print('3.商品別の売上集計')
+    print('4.商品別の売上ランキング')
+    print('5.日別の売上集計')
+    print('6.日別の売上比較')
+    print('7.すべての売上記録')
     print('0.終了')
     print('===============================')
 

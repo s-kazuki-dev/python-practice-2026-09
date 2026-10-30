@@ -1,13 +1,9 @@
 
-from sales_data import (
-    sales_datas
-)
 
 from sales_input import (
     input_integer,
     input_positive_integer,
     input_non_negative_integer,
-    input_new_data,
     input_str
 )
 
@@ -28,15 +24,17 @@ from sales_process import (
 )
 
 from sales_display import (
-    show_totals_by_product,
-    show_totals_by_date,
-    show_product_ranking
+    show_totals_by_product
 )
 
 from sales_storage import (
     load_sales,
     save_sales
 )
+
+import sales_input
+
+import sales_storage
 
 
 #空データ/売上金額
@@ -153,10 +151,9 @@ def test_add_new_data():
         ]
     expected_sales = 1400
     expected_quantity = 4
-    result_data = add_new_data(test_data, "2026-10-27", "紅茶", 300, 2)
-    result_sales = calculate_total_sales(result_data)
-    result_quantity = calculate_total_quantity(result_data)
-    assert result_data == expected_data
+    add_new_data(test_data, "2026-10-27", "紅茶", 300, 2)
+    result_sales = calculate_total_sales(test_data)
+    result_quantity = calculate_total_quantity(test_data)
     assert test_data == expected_data
     assert result_sales == expected_sales
     assert result_quantity == expected_quantity
@@ -202,7 +199,6 @@ def test_input_positive(monkeypatch):
     result = input_positive_integer('数字を入力:')
     assert result == 3
 
-import sales_input
 #input_new_dataの入力テスト
 def test_input_new_data(monkeypatch):
     monkeypatch.setattr(
@@ -215,7 +211,11 @@ def test_input_new_data(monkeypatch):
 
 #jsonファイルのテスト
 def test_save_and_load_sales(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        sales_storage,
+        "SALES_FILE",
+        tmp_path / "sales.json"
+        )
     test_datas = [
         {"date": "2026-10-20", "name": "コーヒー", "price": 400, "quantity": 12},
         {"date": "2026-10-20", "name": "カレー", "price": 900, "quantity": 8},
@@ -224,9 +224,14 @@ def test_save_and_load_sales(tmp_path, monkeypatch):
     datas = load_sales()
     assert datas == test_datas
 
+
 #jsonファイルのテスト
 def test_load_sales_no_file(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        sales_storage,
+        "SALES_FILE",
+        tmp_path / "sales.json"
+    )
     datas = load_sales()
     assert datas == []
 
